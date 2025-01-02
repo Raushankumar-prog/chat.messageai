@@ -1,0 +1,14 @@
+{
+  "name": "unitravel",
+  "private": true,
+  "workspaces": [
+    "api",
+    "client",
+    "packages/*"
+  ],
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Raushankumar-prog/unitravel.git",
+  "author": "Raushan kumar <raushankumar8757825@gmail.com>",
+  "license": "MIT"
+}
