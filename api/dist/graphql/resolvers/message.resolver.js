@@ -1,4 +1,9 @@
 import prisma from "../../server.js";
+var role;
+(function (role) {
+    role[role["USER"] = 0] = "USER";
+    role[role["SYSTEM"] = 1] = "SYSTEM";
+})(role || (role = {}));
 export const messageResolvers = {
     Query: {
         // Fetch all messages for a specific chat
@@ -55,7 +60,7 @@ export const messageResolvers = {
                 where: { id: args.id },
                 data: {
                     content: args.content || undefined,
-                    role: args.role || undefined,
+                    role: args?.role || undefined,
                 },
                 include: {
                     chat: true,
