@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server';
-import schema from './graphql/schema.js';
+import { schema } from './graphql/schema.js';
 
 
 

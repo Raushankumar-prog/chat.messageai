@@ -11,6 +11,7 @@ type User {
   payments: [Payment!]!
 }
 
+
 type Chat {
   id: ID!
   title: String
@@ -19,6 +20,7 @@ type Chat {
   user: User!
   messages: [Message!]!
 }
+
 
 type Message {
   id: ID!
@@ -32,12 +34,16 @@ type Message {
   childMessages: [Message!]!
 }
 
+
 type MediaLink {
   id: ID!
   url: String!
   createdAt: String!
   updatedAt: String!
 }
+
+
+
 
 type Query {
   users: [User!]!
@@ -47,6 +53,8 @@ type Query {
   messages(chatId: ID!): [Message!]!
   message(id: ID!): Message
 }
+
+
 
 type Mutation {
   createUser(email: String!, name: String, avatar: String): User!
@@ -68,9 +76,15 @@ type Mutation {
   deleteMessage(id: ID!): Message!
 }
 
+
+
+
 input MediaLinkInput {
   url: String!
+  type: MediaType!
 }
+
+
 
 enum UserRole {
   USER

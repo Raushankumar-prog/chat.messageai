@@ -1,4 +1,5 @@
 import prisma from "../../server.js";
+import { MediaType, UserRole } from '@prisma/client';
 
 export const messageResolvers = {
   Query: {
@@ -35,10 +36,10 @@ export const messageResolvers = {
       _: any,
       args: {
         content: string;
-        role: string;
+        role: UserRole;
         chatId: string;
         parentMessageId?: string;
-        mediaLinks?: { url: string }[];
+        mediaLinks?: { url: string; type: MediaType }[];
       }
     ) => {
       return await prisma.message.create({
@@ -48,11 +49,14 @@ export const messageResolvers = {
           chatId: args.chatId,
           parentMessageId: args.parentMessageId || null,
           mediaLinks: args.mediaLinks
-            ? {
-                create: args.mediaLinks,
-              }
-            : undefined,
-        },
+          ? {
+              create: args.mediaLinks.map((mediaLink) => ({
+                url: mediaLink.url,
+                type: mediaLink.type, 
+              })),
+            }
+          : undefined,
+      },
         include: {
           chat: true,
           mediaLinks: true,
@@ -65,7 +69,7 @@ export const messageResolvers = {
     // Update an existing message
     updateMessage: async (
       _: any,
-      args: { id: string; content?: string; role?: string }
+      args: { id: string; content?: string; role?: UserRole }
     ) => {
       return await prisma.message.update({
         where: { id: args.id },
