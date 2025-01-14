@@ -30,10 +30,7 @@ export default function Sidebar() {
           </div>
         </div>
         {/* Footer */}
-        <div className="text-xs text-gray-500">
-          <p>Patna, Bihar, India</p>
-          <p>48°F Fog</p>
-        </div>
+        
       </div>
     );
   }

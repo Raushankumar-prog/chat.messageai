@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,37 +29,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-gray-300`}
       >
-        {/* Global Header */}
-        <header className="bg-gray-800 p-4">
-          <div className="container mx-auto flex justify-between items-center">
-            <h1 className="text-lg font-semibold">AvailabilityAI</h1>
-            <nav>
-              <a href="/" className="px-4 hover:text-yellow-500">
-                Home
-              </a>
-              <a href="/about" className="px-4 hover:text-yellow-500">
-                About
-              </a>
-              <a href="/contact" className="px-4 hover:text-yellow-500">
-                Contact
-              </a>
-            </nav>
-          </div>
-        </header>
-
-        {/* Main Content */}
+        <Header/>
         <div className="flex min-h-screen">
           {/* Sidebar */}
-         
+         <Sidebar/>
 
-          {/* Dynamic Page Content */}
+          
           <main className="flex-1 p-6">{children}</main>
         </div>
-
-        {/* Global Footer */}
-        <footer className="bg-gray-800 p-4 text-center">
-          <p>© 2025 AvailabilityAI. All rights reserved.</p>
-        </footer>
       </body>
     </html>
   );
