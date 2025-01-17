@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
+import ChatInput from "./components/ChatInput";
+
 
 export const metadata: Metadata = {
   title: "Availabilityai",
@@ -15,21 +17,41 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en"  className="font-serif">
-      <body
-        className="font-serif antialiased bg-gray-900 text-gray-300"
-      >
-   
-        <div className="flex">
-  {/* Sidebar */}
-  <Sidebar />
+    <html lang="en" className="font-serif">
+      <body className="font-serif antialiased bg-gray-900 text-gray-300 h-screen">
+        <div className="flex h-full">
+          {/* Sidebar */}
+          <ScrollArea.Root className=" h-full bg-gray-800">
+            <ScrollArea.Viewport className="h-full">
+              <Sidebar />
+            </ScrollArea.Viewport>
+            <ScrollArea.Scrollbar
+              orientation="vertical"
+              className="flex w-2 bg-gray-700 hover:bg-gray-600 transition-colors"
+            >
+              <ScrollArea.Thumb className="bg-gray-500 rounded-full" />
+            </ScrollArea.Scrollbar>
+          </ScrollArea.Root>
 
-  {/* Main Content */}
-  <div className="flex-1 bg-gray-900 text-gray-100 p-6">
-    {children}
-  </div>
-</div>
-
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col bg-gray-900 text-gray-100">
+            {/* Header */}
+            <Header />
+            {/* Scrollable Content */}
+            <ScrollArea.Root className="flex-1 overflow-hidden">
+              <ScrollArea.Viewport className="h-full p-6">
+                {children}
+              </ScrollArea.Viewport>
+              <ScrollArea.Scrollbar
+                orientation="vertical"
+                className="flex w-2 bg-gray-700 hover:bg-gray-600 transition-colors"
+              >
+                <ScrollArea.Thumb className="bg-gray-500 rounded-full" />
+              </ScrollArea.Scrollbar>
+            </ScrollArea.Root>
+            <ChatInput />
+          </div>
+        </div>
       </body>
     </html>
   );
