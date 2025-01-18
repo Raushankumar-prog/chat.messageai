@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
 model User {
   id         String    @id @default(cuid())
   email      String    @unique
@@ -19,6 +21,10 @@ model User {
   chats      Chat[]  
   payments Payment[]         
 }
+
+
+
+
 model Payment {
   id          String         @id @default(cuid())  
   userId      String                                
@@ -28,11 +34,15 @@ model Payment {
   status      PaymentStatus   @default(PENDING)      
 }
 
+
+
 enum PaymentStatus {
   PENDING    
   SUCCESS   
   FAILED    
 }
+
+
 
 model Chat {
   id         String     @id @default(cuid())
@@ -43,6 +53,7 @@ model Chat {
   user       User       @relation(fields: [userId], references: [id])
   messages   Message[]  
 }
+
 
 model Message {
   id              String     @id @default(cuid())
@@ -60,6 +71,7 @@ model Message {
 
 
 
+
 model MediaLink {
   id        String   @id @default(cuid())
   url       String
@@ -69,10 +81,14 @@ model MediaLink {
   createdAt DateTime  @default(now())
 }
 
+
+
 enum MediaType {
   IMAGE
   VIDEO
 }
+
+
 
 enum UserRole {
   USER   
