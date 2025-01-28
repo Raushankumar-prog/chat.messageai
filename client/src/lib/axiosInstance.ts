@@ -1,10 +1,11 @@
-import axios from 'axios';
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL, 
+const client = new ApolloClient({
+  uri: process.env.NEXT_PUBLIC_API_URL, // Your GraphQL API endpoint
+  cache: new InMemoryCache(),
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
-export default axiosInstance;
+export default client;
