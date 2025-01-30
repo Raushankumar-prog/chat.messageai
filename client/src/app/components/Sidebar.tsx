@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { GET_CHATS } from "../../graphql/queries/chats";
+import Link from "next/link";
 
 // Define TypeScript types for the GraphQL response
 type Chat = {
@@ -15,6 +16,8 @@ type GetChatsResponse = {
 };
 
 export default function Sidebar() {
+
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -57,6 +60,8 @@ export default function Sidebar() {
       {/* Fixed "New Chat" Button */}
       {isSidebarOpen && (
         <div className="mb-4">
+          <Link
+          href="/">
           <button className="flex items-center w-full bg-gray-700 text-gray-300 py-2 px-4 rounded-md hover:bg-gray-600 transition-colors">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -70,6 +75,7 @@ export default function Sidebar() {
             </svg>
             New Chat
           </button>
+          </Link>
         </div>
       )}
 
@@ -87,16 +93,17 @@ export default function Sidebar() {
               ) : (
                 data?.chats?.slice(0, isExpanded ? data.chats.length : 5).map((chat: Chat) => (
                   <li key={chat.id}>
-                    <a
-                      href="#"
+                    <Link
+                    href={chat?.id ? `/c/${chat.id}` : "#"}
                       className={`block mb-2 p-2 rounded ${
                         isSidebarOpen
                           ? "text-slate-500 hover:bg-gray-800 hover:text-sky-400"
                           : "text-gray-400 text-center"
                       } transition-colors`}
+                      
                     >
                       {isSidebarOpen ? chat.title : "•"}
-                    </a>
+                    </Link>
                   </li>
                 ))
               )}
