@@ -1,38 +1,74 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useChatStore } from "../../hook/useChatStore";
 import { FaMicrophone } from "react-icons/fa";
 import { usePathname } from "next/navigation";
+import { useMutation } from "@apollo/client";
+import { ASK_AI } from "../../graphql/queries/askAi";
+
+
 
 
 export default function ChatInput() {
   const [input, setInput] = useState("");
-   const pathname = usePathname();
-  const { addMessage, setShouldScroll } = useChatStore();
+  const pathname = usePathname();
+ const { addMessage, setShouldScroll, messages, updateMessage } = useChatStore();
+;
+  const latestMessageRef = useRef<HTMLDivElement>(null);
+  const [askAI] = useMutation(ASK_AI);
+  const [waitingForResponseMessageId, setWaitingForResponseMessageId] = useState<string | null>(null);
 
 
 
-  const handleSend = () => {
-    if (!input.trim()) return;
 
-    const newMessage = {
+const handleSend = async () => {
+  if (!input.trim()) return;
 
-      id: Date.now().toString(),
-      content: input,
-      childMessages: [], 
-    };
-
-    addMessage(newMessage);
-    setShouldScroll(true);
-    setInput("");
-   
-
+  const newMessage = {
+    id: Date.now().toString(),
+    content: input,
+    childMessages: [],
   };
 
-  useEffect(()=>{
-     setInput("");
-  },[pathname])
+
+
+  addMessage(newMessage);
+  setShouldScroll(true);
+  setInput("");
+
+
+
+  // Query AI
+  setWaitingForResponseMessageId(newMessage.id);
+  try {
+    const { data } = await askAI({ variables: { message: input } });
+    const response = data?.askAI?.response;
+
+    
+    if (response) {
+      // Update the message in the store
+      updateMessage(newMessage.id, {
+        childMessages: [{ id: "ai-response", content: response }],
+      });
+    }
+  } catch (error) {
+    console.error("Error asking AI: ", error);
+  } finally {
+    setWaitingForResponseMessageId(null);
+  }
+};
+
+
+
+
+
+
+
+  useEffect(() => {
+    setInput("");
+  }, [pathname]);
+
 
 
 
