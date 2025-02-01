@@ -12,6 +12,7 @@ export default function ChatInput() {
   const { addMessage, setShouldScroll } = useChatStore();
 
 
+
   const handleSend = () => {
     if (!input.trim()) return;
 
@@ -32,6 +33,8 @@ export default function ChatInput() {
   useEffect(()=>{
      setInput("");
   },[pathname])
+
+
 
 
   return (

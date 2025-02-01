@@ -2,7 +2,7 @@ import { OpenAI } from "openai";
 
 const openai = new OpenAI();
 
-async function getHaiku(): Promise<void> {
+export default async function getHaiku(): Promise<void> {
     const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -17,4 +17,4 @@ async function getHaiku(): Promise<void> {
     console.log(completion.choices[0].message.content);
 }
 
-getHaiku();
+
