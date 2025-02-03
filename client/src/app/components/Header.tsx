@@ -38,13 +38,7 @@ export default function Header() {
         </DropdownMenu.Root>
       </div>
 
-      <div className="flex items-center space-x-4">
-        <img
-          src="https://via.placeholder.com/40"
-          alt="Profile"
-          className="w-10 h-10 rounded-full"
-        />
-      </div>
+
     </div>
   );
 }
