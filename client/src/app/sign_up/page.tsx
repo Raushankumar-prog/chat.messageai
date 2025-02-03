@@ -3,12 +3,20 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 
+
+
+
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [code, setCode] = useState("");
   const [isChecked, setIsChecked] = useState(false);
+
+
+
+
+
 
   const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +27,10 @@ export default function SignUpPage() {
     alert("Sign-up successful!");
   };
 
+
+
+
+  
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 p-4">
       <div className="w-full max-w-md rounded-lg bg-gray-800 p-6 shadow-lg">

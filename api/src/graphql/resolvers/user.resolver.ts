@@ -1,4 +1,8 @@
 import prisma from "../../server.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+const SECRET_KEY = "your_secret_key"; 
 
 export const userResolvers = {
   Query: {
@@ -7,14 +11,58 @@ export const userResolvers = {
   },
 
   Mutation: {
-    createUser: (_: any, args: { email: string; name?: string; avatar?: string }) =>
-      prisma.user.create({
+    createUser: async (_: any, args: { email: string; name?: string; avatar?: string; password?: string; googleId?: string }) => {
+    
+      const existingUser = await prisma.user.findUnique({ where: { email: args.email } });
+      if (existingUser) {
+        throw new Error("User already exists with this email");
+      }
+
+     
+      const hashedPassword = args.password ? await bcrypt.hash(args.password, 10) : null;
+
+      return prisma.user.create({
         data: {
           email: args.email,
-          name: args.name ?? null, 
-          avatar: args.avatar ?? null, 
+          name: args.name ?? null,
+          avatar: args.avatar ?? null,
+          password: hashedPassword ?? null,
+          googleId: args.googleId ?? null,
         },
-      }),
+      });
+    },
+
+
+
+    loginUser: async (_: any, args: { email: string; password?: string; googleId?: string }) => {
+      const user = await prisma.user.findUnique({ where: { email: args.email } });
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      if (args.googleId) {
+     
+        if (user.googleId !== args.googleId) {
+          throw new Error("Invalid Google ID");
+        }
+      } else if (args.password) {
+       
+        if (!user.password) {
+          throw new Error("This account does not support password login");
+        }
+        const isPasswordValid = await bcrypt.compare(args.password, user.password);
+        if (!isPasswordValid) {
+          throw new Error("Invalid credentials");
+        }
+      } else {
+        throw new Error("Either password or Google ID is required for login");
+      }
+
+    
+      const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
+
+      return { token, user };
+    },
   },
-  
 };

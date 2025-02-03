@@ -1,6 +1,7 @@
 type User {
   id: ID!
   email: String!
+  password:string
   name: String
   avatar: String
   createdAt: String!

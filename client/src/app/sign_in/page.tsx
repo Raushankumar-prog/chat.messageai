@@ -12,13 +12,13 @@ export default function LoginPage() {
         <div className="text-center mb-6">
           <h1 className="text-3xl font-semibold text-blue-400">deepseek</h1>
           <p className="text-sm text-gray-400 mt-2">
-            Only login via email, Google, or +86 phone number login is supported in your region.
+            Only login via email or  Google
           </p>
         </div>
         <div>
           <input
             type="text"
-            placeholder="Phone number / email address"
+            placeholder="email address"
             className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

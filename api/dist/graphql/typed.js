@@ -66,6 +66,10 @@ export const typeDefs = gql `
     SYSTEM
   }
 
+  type AIResponse {
+    response: String!
+  }
+
   type Query {
     users: [User!]!
     user(id: ID!): User
@@ -103,6 +107,7 @@ export const typeDefs = gql `
     ): Payment!
     updatePayment(id: ID!, status: PaymentStatus!): Payment!
     deletePayment(id: ID!): Payment!
+    askAI(message: String!): AIResponse!
   }
 
   input MediaLinkInput {

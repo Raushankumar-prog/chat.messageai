@@ -4,7 +4,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
 
 export default function Header() {
-  // State to track the selected option
+  
   const [selectedOption, setSelectedOption] = useState("Gemini");
 
   // Options for the dropdown

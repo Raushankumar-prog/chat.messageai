@@ -1,6 +1,7 @@
 import { chatResolvers } from "./chat.resolver.js";
 import { messageResolvers } from "./message.resolver.js";
 import { userResolvers } from "./user.resolver.js";
+import { askairesolvers } from "../../ai/gemini/textgeneration.js";
 export const resolvers = {
     Query: {
         ...userResolvers.Query,
@@ -10,6 +11,7 @@ export const resolvers = {
     Mutation: {
         ...userResolvers.Mutation,
         ...messageResolvers.Mutation,
-        ...chatResolvers.Mutation
+        ...chatResolvers.Mutation,
+        ...askairesolvers.Mutation
     },
 };
