@@ -7,3 +7,5 @@ export const ASK_AI = gql`
     }
   }
 `;
+
+

@@ -5,6 +5,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   headers: {
     "Content-Type": "application/json",
+    "charset":"utf-8",
   },
 });
 

@@ -82,7 +82,8 @@ export const typeDefs = gql `
   }
 
   type Mutation {
-    createUser(email: String!, name: String, avatar: String): User!
+    createUser(email: String!, name: String, avatar: String,password:String,googleId:String): User!
+    loginUser(email: String!, password: String, googleId: String): User!
     createChat(title: String, userId: String!): Chat!
     updateChat(id: ID!, title: String): Chat!
     deleteChat(id: ID!): Chat!

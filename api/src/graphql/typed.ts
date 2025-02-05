@@ -4,6 +4,7 @@ export const typeDefs = gql`
   type User {
     id: ID!
     email: String!
+    password:String
     name: String
     avatar: String
     createdAt: String!
@@ -81,10 +82,13 @@ export const typeDefs = gql`
     payments(userId: ID!): [Payment!]!
     payment(id: ID!): Payment
   }
-
+type AuthPayload {
+  token: String!
+  user: User!
+} 
   type Mutation {
     createUser(email: String!, name: String, avatar: String,password:String,googleId:String): User!
-    loginUser(email: String!, password: String, googleId: String): User!
+    loginUser(email: String!, password: String, googleId: String): AuthPayload!
     createChat(title: String, userId: String!): Chat!
     updateChat(id: ID!, title: String): Chat!
     deleteChat(id: ID!): Chat!

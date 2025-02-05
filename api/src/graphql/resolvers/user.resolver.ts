@@ -36,10 +36,15 @@ export const userResolvers = {
 
     loginUser: async (_: any, args: { email: string; password?: string; googleId?: string }) => {
       const user = await prisma.user.findUnique({ where: { email: args.email } });
-
+          
       if (!user) {
         throw new Error("User not found");
       }
+
+        
+   if (!user.email) {
+     throw new Error("User email is missing in the database");
+   } 
 
       if (args.googleId) {
      
@@ -59,10 +64,9 @@ export const userResolvers = {
         throw new Error("Either password or Google ID is required for login");
       }
 
-    
       const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
 
-      return { token, user };
+      return { token, user};
     },
   },
 };
