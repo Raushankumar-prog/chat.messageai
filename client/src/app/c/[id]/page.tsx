@@ -18,6 +18,7 @@ const QAPage: React.FC = () => {
     skip: !chatId,
   });
 
+   console.log(data);
   useEffect(() => {
     clearMessages();
   }, [chatId, clearMessages]);
@@ -37,6 +38,7 @@ const QAPage: React.FC = () => {
 
   if (loading) return <p className="text-white">Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
+
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-200 px-6 py-12 flex flex-col items-center">

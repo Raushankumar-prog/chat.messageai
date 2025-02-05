@@ -85,7 +85,12 @@ export const typeDefs = gql`
 type AuthPayload {
   token: String!
   user: User!
-} 
+}  
+input ChildMessageInput {
+  content: String!
+  role: UserRole!
+  chatId:String!
+}
   type Mutation {
     createUser(email: String!, name: String, avatar: String,password:String,googleId:String): User!
     loginUser(email: String!, password: String, googleId: String): AuthPayload!
@@ -93,12 +98,12 @@ type AuthPayload {
     updateChat(id: ID!, title: String): Chat!
     deleteChat(id: ID!): Chat!
     createMessage(
-      content: String!
-      role: UserRole!
-      chatId: String!
-      parentMessageId: ID
-      mediaLinks: [MediaLinkInput!]
-    ): Message!
+    content: String!
+    role: UserRole!
+    chatId: String!
+    childMessage: ChildMessageInput! # Accepts exactly one child message
+    mediaLinks: [MediaLinkInput!]
+  ): Message!
     updateMessage(
       id: ID!
       content: String

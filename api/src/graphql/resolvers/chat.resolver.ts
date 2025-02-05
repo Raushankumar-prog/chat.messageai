@@ -36,6 +36,8 @@ export const chatResolvers = {
       });
     },
 
+  
+
     
     updateChat: async (_: any, args: { id: string; title?: string }) => {
       return await prisma.chat.update({
@@ -45,7 +47,7 @@ export const chatResolvers = {
         },
       });
     },
-
+    
 
     deleteChat: async (_: any, args: { id: string }) => {
       return await prisma.chat.delete({
