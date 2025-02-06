@@ -3,15 +3,18 @@ import prisma from "../../server.js";
 export const chatResolvers = {
   Query: {
 
-    chats: async (_: any, args: { userId: string }) => {
-      return await prisma.chat.findMany({
-        where: { userId: args.userId },
-        include: {
-          user: true,
-          messages: true,
-        },
-      });
+  chats: async (_: any, args: { userId: string }) => {
+  return await prisma.chat.findMany({
+    where: { userId: args.userId },
+    include: {
+      user: true,
+      messages: true,
     },
+    orderBy: {
+      createdAt: "desc", // Sorting in descending order
+    },
+  });
+},
 
  
     chatone: async (_: any, args: { id: string }) => {

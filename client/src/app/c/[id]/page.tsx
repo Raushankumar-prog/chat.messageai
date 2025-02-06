@@ -10,7 +10,7 @@ import ReactMarkdown from "react-markdown";
 const QAPage: React.FC = () => {
   const params = useParams();
   const chatId = params?.id as string;
-  const { messages, addMessage, shouldScroll, setShouldScroll, clearMessages } = useChatStore();
+  const { addMessage, getMessages, shouldScroll, setShouldScroll } = useChatStore();
   const latestMessageRef = useRef<HTMLDivElement>(null);
 
   const { data, loading, error } = useQuery(GET_MESSAGES, {
@@ -18,18 +18,13 @@ const QAPage: React.FC = () => {
     skip: !chatId,
   });
 
-   console.log(data);
-
-  useEffect(() => {
-    clearMessages();
-  }, [chatId, clearMessages]);
-  
+  const messages = getMessages(chatId); // Get messages for this chat
 
   useEffect(() => {
     if (data?.messages) {
-      data.messages.forEach((msg: any) => addMessage(msg));
+      data.messages.forEach((msg: any) => addMessage(chatId, msg));
     }
-  }, [data, addMessage]);
+  }, [data, addMessage, chatId]);
 
   useEffect(() => {
     if (shouldScroll && latestMessageRef.current) {
@@ -40,7 +35,6 @@ const QAPage: React.FC = () => {
 
   if (loading) return <p className="text-white">Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
-
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-200 px-6 py-12 flex flex-col items-center">

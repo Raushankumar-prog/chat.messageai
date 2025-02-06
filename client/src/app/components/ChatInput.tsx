@@ -8,13 +8,13 @@ import { useMutation } from "@apollo/client";
 import { ASK_AI } from "../../graphql/queries/askAi";
 import { SAVE_ANS } from "../../graphql/queries/save";
 import { CREATETITLE } from "../../graphql/queries/createChat";
+import { v4 as uuidv4 } from "uuid";
 
 export default function ChatInput() {
   const [input, setInput] = useState("");
   const pathname = usePathname();
   const router = useRouter();
   const { addMessage, setShouldScroll, updateMessage } = useChatStore();
-  const latestMessageRef = useRef<HTMLDivElement>(null);
   const [askAI] = useMutation(ASK_AI);
   const [saveAns] = useMutation(SAVE_ANS);
   const [createTitle] = useMutation(CREATETITLE);
@@ -22,7 +22,6 @@ export default function ChatInput() {
   const [newChatId, setNewChatId] = useState<string | null>(null);
 
   const chatId = pathname.split("/c/")[1];
-  const isLocalhost = typeof window !== "undefined" && window.location.hostname === "localhost";
 
   const handleSend = async (chatID?: string) => {
     if (!input.trim()) return;
@@ -30,12 +29,13 @@ export default function ChatInput() {
 
     if (targetChatId) {
       const newMessage = {
-        id: Date.now().toString(),
+        id: uuidv4(),
+
         content: input,
         childMessages: [],
       };
 
-      addMessage(newMessage);
+      addMessage(targetChatId, newMessage); 
       setShouldScroll(true);
       setInput("");
 
@@ -45,7 +45,7 @@ export default function ChatInput() {
         const response = data?.askAI?.response;
 
         if (response) {
-          updateMessage(newMessage.id, {
+          updateMessage(targetChatId, newMessage.id, {
             childMessages: [{ id: "ai-response", content: response }],
           });
 

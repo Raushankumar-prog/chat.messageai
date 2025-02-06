@@ -3,42 +3,58 @@ import { create } from "zustand";
 type Message = {
   id: string;
   content: string;
-  childMessages: Message[];
+  childMessages: string[]; // Store only child message IDs
 };
 
 type ChatStore = {
-  messages: Message[];
-  addMessage: (message: Message) => void;
-  updateMessage: (id: string, updates: Partial<Message>) => void;
-  clearMessages: () => void;
+  messagesByChatId: Record<string, Record<string, Message>>; // Store messages by ID
+  addMessage: (chatId: string, message: Message) => void;
+  updateMessage: (chatId: string, messageId: string, updates: Partial<Message>) => void;
+  getMessages: (chatId: string) => Message[];
   shouldScroll: boolean;
   setShouldScroll: (shouldScroll: boolean) => void;
 };
 
-export const useChatStore = create<ChatStore>((set) => ({
-  messages: [],
+export const useChatStore = create<ChatStore>((set, get) => ({
+  messagesByChatId: {},
 
-  addMessage: (message) => {
-    console.log("Adding message:", message);
-    set((state) => ({ messages: [...state.messages, message] }));
-  },
-
-  updateMessage: (id, updates) => {
-    console.log("Updating message:", id, updates);
+  addMessage: (chatId, message) => {
+    console.log(`Adding message ${message.id} to chat ${chatId}`);
     set((state) => ({
-      messages: state.messages.map((msg) =>
-        msg.id === id ? { ...msg, ...updates } : msg
-      ),
+      messagesByChatId: {
+        ...state.messagesByChatId,
+        [chatId]: {
+          ...(state.messagesByChatId[chatId] || {}),
+          [message.id]: message,
+        },
+      },
     }));
   },
 
-  clearMessages: () => {
-    console.log("Clearing all messages");
-    set({ messages: [] });
+  updateMessage: (chatId, messageId, updates) => {
+    console.log(`Updating message ${messageId} in chat ${chatId}:`, updates);
+    set((state) => {
+      const chatMessages = state.messagesByChatId[chatId] || {};
+      if (!chatMessages[messageId]) return state; // Message not found
+
+      return {
+        messagesByChatId: {
+          ...state.messagesByChatId,
+          [chatId]: {
+            ...chatMessages,
+            [messageId]: { ...chatMessages[messageId], ...updates },
+          },
+        },
+      };
+    });
+  },
+
+  getMessages: (chatId) => {
+    const messagesById = get().messagesByChatId[chatId] || {};
+    return Object.values(messagesById);
   },
 
   shouldScroll: true,
-
   setShouldScroll: (shouldScroll) => {
     console.log("Setting shouldScroll:", shouldScroll);
     set({ shouldScroll });
