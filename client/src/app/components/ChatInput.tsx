@@ -3,74 +3,106 @@
 import { useEffect, useState, useRef } from "react";
 import { useChatStore } from "../../hook/useChatStore";
 import { FaMicrophone } from "react-icons/fa";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
 import { ASK_AI } from "../../graphql/queries/askAi";
 import { SAVE_ANS } from "../../graphql/queries/save";
+import { CREATETITLE } from "../../graphql/queries/createChat";
 
 export default function ChatInput() {
   const [input, setInput] = useState("");
   const pathname = usePathname();
-  const { addMessage, setShouldScroll, messages, updateMessage } = useChatStore();
+  const router = useRouter();
+  const { addMessage, setShouldScroll, updateMessage } = useChatStore();
   const latestMessageRef = useRef<HTMLDivElement>(null);
   const [askAI] = useMutation(ASK_AI);
   const [saveAns] = useMutation(SAVE_ANS);
+  const [createTitle] = useMutation(CREATETITLE);
   const [waitingForResponseMessageId, setWaitingForResponseMessageId] = useState<string | null>(null);
+  const [newChatId, setNewChatId] = useState<string | null>(null);
 
-  // Extract chatId from URL
-  const chatId = pathname.split("/c/")[1]; // Assumes URL structure like /c/{chatId}
+  const chatId = pathname.split("/c/")[1];
+  const isLocalhost = typeof window !== "undefined" && window.location.hostname === "localhost";
 
-  const handleSend = async () => {
-    if (!input.trim() || !chatId) return; // Ensure chatId exists
+  const handleSend = async (chatID?: string) => {
+    if (!input.trim()) return;
+    const targetChatId = chatID || chatId;
 
-    const newMessage = {
-      id: Date.now().toString(),
-      content: input,
-      childMessages: [],
-    };
+    if (targetChatId) {
+      const newMessage = {
+        id: Date.now().toString(),
+        content: input,
+        childMessages: [],
+      };
 
-    addMessage(newMessage);
-    setShouldScroll(true);
-    setInput("");
+      addMessage(newMessage);
+      setShouldScroll(true);
+      setInput("");
 
-    // Query AI
-    setWaitingForResponseMessageId(newMessage.id);
-    try {
-      const { data } = await askAI({ variables: { message: input } });
-      const response = data?.askAI?.response;
-           
-      console.log("Data received:", data);
-      if (response) {
-        // Update the message in the store
-        updateMessage(newMessage.id, {
-          childMessages: [{ id: "ai-response", content: response }],
-        });
+      setWaitingForResponseMessageId(newMessage.id);
+      try {
+        const { data } = await askAI({ variables: { message: input } });
+        const response = data?.askAI?.response;
 
-        // Save the message in the database
-        await saveAns({
-          variables: {
-            content: input,
-            role: "USER",
+        if (response) {
+          updateMessage(newMessage.id, {
+            childMessages: [{ id: "ai-response", content: response }],
+          });
 
-            chatId, // Use extracted chatId
-            childMessage: {
-              content: response,
-              role: "SYSTEM",
-              chatId,
+          await saveAns({
+            variables: {
+              content: input,
+              role: "USER",
+              chatId: targetChatId,
+              childMessage: {
+                content: response,
+                role: "SYSTEM",
+                chatId: targetChatId,
+              },
             },
-          },
-        });
+          });
+        }
+      } catch (error) {
+        console.error("Error asking AI: ", error);
+      } finally {
+        setWaitingForResponseMessageId(null);
       }
+    }
+  };
+
+  const handleCreateChatAndSend = async () => {
+    if (!input.trim()) return;
+
+    try {
+      const titlePrompt = `"${input}" but do not answer it. Instead, provide a concise title for it in exactly three or four words, nothing more.`;
+      const { data: titleData } = await askAI({ variables: { message: titlePrompt } });
+
+      const title = titleData?.askAI?.response;
+      if (!title || title.split(" ").length > 4) {
+        console.error("Error: AI did not return a valid 3-4 word title");
+        return;
+      }
+
+      const { data: chatData } = await createTitle({ variables: { title, userId: "cm61o3dwk0000slrh6747uhif" } });
+      const newChatId = chatData?.createChat?.id;
+      if (!newChatId) {
+        console.error("Error creating chat");
+        return;
+      }
+
+      setNewChatId(newChatId);
+      router.push(`/c/${newChatId}`);
     } catch (error) {
-      console.error("Error asking AI: ", error);
-    } finally {
-      setWaitingForResponseMessageId(null);
+      console.error("Error in localhost logic: ", error);
     }
   };
 
   useEffect(() => {
-    setInput("");
-  }, [pathname]);
+    if (newChatId && pathname === `/c/${newChatId}`) {
+      handleSend(newChatId);
+      setNewChatId(null);
+    }
+  }, [newChatId, pathname]);
 
   return (
     <div className="fixed bottom-4 left-80 right-4 flex items-center justify-between gap-4">
@@ -80,7 +112,7 @@ export default function ChatInput() {
           placeholder="Ask Gemini"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          onKeyDown={(e) => e.key === "Enter" && (chatId ? handleSend() : handleCreateChatAndSend())}
           className="bg-transparent flex-1 text-gray-300 focus:outline-none"
         />
         <FaMicrophone className="text-gray-400 cursor-pointer" />

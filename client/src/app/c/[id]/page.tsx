@@ -19,9 +19,11 @@ const QAPage: React.FC = () => {
   });
 
    console.log(data);
+
   useEffect(() => {
     clearMessages();
   }, [chatId, clearMessages]);
+  
 
   useEffect(() => {
     if (data?.messages) {
