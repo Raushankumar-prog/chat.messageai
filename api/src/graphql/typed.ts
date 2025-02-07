@@ -91,6 +91,14 @@ input ChildMessageInput {
   role: UserRole!
   chatId:String!
 }
+
+type Mutation {
+  sendResetCode(email: String!): Boolean!
+  verifyResetCode(email: String!, code: String!): Boolean!
+  resetPassword(email: String!, newPassword: String!): Boolean!
+}
+
+
   type Mutation {
     createUser(email: String!, name: String, avatar: String,password:String,googleId:String): User!
     loginUser(email: String!, password: String, googleId: String): AuthPayload!

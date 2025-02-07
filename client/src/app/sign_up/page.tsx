@@ -9,6 +9,7 @@ import { useGoogleAuth } from "@lib/googleAuth";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ export default function SignUpPage() {
   useEffect(() => {
     if (user) {
       handleGoogleSignUp();
-      
+        
     }
   }, [user]);
 
@@ -79,6 +80,7 @@ export default function SignUpPage() {
       Cookies.set("token", data.createUser.token, { expires: 7 });
       router.push("/");
     } catch (err) {
+          logout();
       toast.error(`Google Sign-up failed: ${err.message}`);
     }
   };
@@ -139,6 +141,12 @@ export default function SignUpPage() {
             {loading ? "Signing up..." : "Sign up"}
           </button>
         </form>
+           <div className="text-right mt-4">
+              <Link href="/sign_in" className="text-blue-500 hover:underline    text-sm">
+                          Log in
+               </Link>
+           </div>
+
 
         <div className="flex items-center my-4">
           <div className="flex-1 border-t border-gray-600"></div>

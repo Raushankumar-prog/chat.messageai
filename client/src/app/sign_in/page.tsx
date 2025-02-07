@@ -8,6 +8,7 @@ import { login } from "../../graphql/queries/login";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify"; // Correct import for ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import CSS for Toast notifications
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,11 +17,29 @@ export default function LoginPage() {
   const router = useRouter();
   const [loginUser] = useMutation(login);
 
+
+
+
+
   useEffect(() => {
     if (user) {
       handleGoogleLogin();
     }
   }, [user]);
+
+
+
+
+ useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      router.push("/");
+    }
+  }, [router]);
+
+   
+
+
 
   const handleLogin = async () => {
     try {
@@ -28,18 +47,18 @@ export default function LoginPage() {
         variables: { email, password },
       });
 
-      if (data?.loginUser?.token) {
+     
         Cookies.set("token", data.loginUser.token, { expires: 7, secure: true });
         toast.success("Login successful!");
         router.push("/"); // Redirect after successful login
-      } else {
-        toast.error("Invalid credentials");
-      }
+       
     } catch (error) {
       console.error("Login Error:", error);
       toast.error("Login failed. Please try again.");
     }
   };
+
+
 
   interface GoogleAuthResult {
     idToken: string;
@@ -50,18 +69,21 @@ export default function LoginPage() {
     };
   }
 
+
+
   const handleGoogleLogin = useCallback(async () => {
     try {
-      let googleUser = user; // Use existing user if already signed in
+        let googleUser = user; // Use existing user if already signed in
 
-      if (!googleUser) {
-        const result: GoogleAuthResult = await signInWithGoogle();
-        if (!result?.idToken || !result?.user) {
-          toast.error("Google login failed.");
-          return;
-        }
+              if (!googleUser) {
+                   const result: GoogleAuthResult = await signInWithGoogle();
+                     if (!result?.idToken || !result?.user) {
+                     toast.error("Google login failed.");
+                    return;
+                   }
 
-        googleUser = result.user; // Use the newly signed-in user
+               googleUser = result.user; // Use the newly signed-in user
+        
       }
 
       const response = await loginUser({
@@ -86,10 +108,16 @@ export default function LoginPage() {
       toast.success("Google login successful!");
       router.push("/"); // Redirect after successful login
     } catch (err) {
+      logout();
       console.error("Google Sign-in error:", err);
       toast.error(`Sign-in failed: ${err.message}`);
     }
   }, [user, signInWithGoogle, loginUser, router]);
+
+
+
+  
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
@@ -116,10 +144,18 @@ export default function LoginPage() {
           />
           <button
             onClick={handleLogin}
-            className="w-full mt-4 p-3 bg-blue-500 rounded text-white font-semibold hover:bg-blue-600"
+            className="w-full mt-4 p-3 bg-gray-500 rounded text-white font-semibold hover:bg-blue-600"
           >
             Log in
           </button>
+        </div>
+        <div className="flex justify-between mt-3">
+               <Link href="/forget_password" className="text-sm text-gray-400 hover:underline">
+                 Forgot password?
+               </Link>
+               <Link href="/sign_up" className="text-sm text-blue-400 hover:underline">
+                 Sign up
+               </Link>
         </div>
 
         <div className="flex items-center my-4">

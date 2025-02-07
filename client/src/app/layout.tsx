@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
 
-  if (pathname === "/sign_in"  ||pathname === "/sign_up"  || pathname === "/payment"  ) {
+  if (pathname === "/sign_in"  ||pathname === "/sign_up"  || pathname === "/payment" || pathname === "/reset_password" || pathname==="/forget_password") {
     return (
       <html lang="en" className="font-serif">
         <body className="font-serif antialiased bg-gray-900 text-gray-300 h-screen flex items-center justify-center">
