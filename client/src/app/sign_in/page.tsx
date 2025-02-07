@@ -31,6 +31,7 @@ export default function LoginPage() {
       if (data?.loginUser?.token) {
         Cookies.set("token", data.loginUser.token, { expires: 7, secure: true });
         toast.success("Login successful!");
+        router.push("/"); // Redirect after successful login
       } else {
         toast.error("Invalid credentials");
       }
@@ -76,14 +77,14 @@ export default function LoginPage() {
       }
 
       const { data } = response;
-      console.log(data);
       if (!data?.loginUser?.token) {
         toast.error("Google login failed. Token not received.");
         return;
       }
 
-      await Cookies.set("token", data.loginUser.token, { expires: 7, secure: true });
+      Cookies.set("token", data.loginUser.token, { expires: 7, secure: true });
       toast.success("Google login successful!");
+      router.push("/"); // Redirect after successful login
     } catch (err) {
       console.error("Google Sign-in error:", err);
       toast.error(`Sign-in failed: ${err.message}`);
@@ -94,7 +95,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
       <div className="w-full max-w-sm p-6 bg-gray-800 rounded-lg shadow-md">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-semibold text-blue-400">deepseek</h1>
+          <h1 className="text-3xl font-semibold text-blue-400">proxima</h1>
           <p className="text-sm text-gray-400 mt-2">Only login via email or Google</p>
         </div>
 

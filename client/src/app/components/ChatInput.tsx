@@ -115,6 +115,7 @@ export default function ChatInput() {
           onKeyDown={(e) => e.key === "Enter" && (chatId ? handleSend() : handleCreateChatAndSend())}
           className="bg-transparent flex-1 text-gray-300 focus:outline-none"
         />
+        
         <FaMicrophone className="text-gray-400 cursor-pointer" />
       </div>
     </div>

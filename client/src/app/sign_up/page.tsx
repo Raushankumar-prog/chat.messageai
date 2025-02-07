@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { CREATE_USER } from "../../graphql/queries/signup";
 import { useGoogleAuth } from "@lib/googleAuth";
+import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [code, setCode] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
 
@@ -21,15 +23,22 @@ export default function SignUpPage() {
   useEffect(() => {
     if (user) {
       handleGoogleSignUp();
+      
     }
   }, [user]);
 
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      router.push("/");
+    }
+  }, [router]);
 
-
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
@@ -44,20 +53,13 @@ export default function SignUpPage() {
         },
       });
 
-      console.log("Sign-up successful:", data);
-      alert("Sign-up successful!");
+      toast.success("Sign-up successful!");
+      Cookies.set("token", data.createUser.token, { expires: 7 });
       router.push("/");
     } catch (err) {
-      console.error("Sign-up error:", err);
-      alert(`Sign-up failed: ${err.message}`);
+      toast.error(`Sign-up failed: ${err.message}`);
     }
   };
-
-
-
-
-
-  
 
   const handleGoogleSignUp = async () => {
     if (!user) return;
@@ -73,20 +75,20 @@ export default function SignUpPage() {
         },
       });
 
-      console.log("Google Sign-up successful:", data);
+      toast.success("Google Sign-up successful!");
+      Cookies.set("token", data.createUser.token, { expires: 7 });
       router.push("/");
     } catch (err) {
-      console.error("Google Sign-up error:", err);
-      alert(`Sign-up failed: ${err.message}`);
+      toast.error(`Google Sign-up failed: ${err.message}`);
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 p-4">
       <div className="w-full max-w-md rounded-lg bg-gray-800 p-6 shadow-lg">
-        <h2 className="text-center text-3xl font-semibold text-blue-500">deepseek</h2>
+        <h2 className="text-center text-3xl font-semibold text-blue-500">proxima</h2>
         <p className="mb-4 text-center text-gray-300">
-          One DeepSeek account is all you need to access all services.
+          One Proxima account is all you need to access all services.
         </p>
 
         <form onSubmit={handleSignUp} className="space-y-4">
@@ -136,8 +138,6 @@ export default function SignUpPage() {
           >
             {loading ? "Signing up..." : "Sign up"}
           </button>
-
-          {error && <p className="text-center text-red-500 mt-2">Error: {error.message}</p>}
         </form>
 
         <div className="flex items-center my-4">
@@ -162,6 +162,7 @@ export default function SignUpPage() {
           </button>
         )}
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
