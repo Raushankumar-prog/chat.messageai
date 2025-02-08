@@ -16,9 +16,9 @@ export function parseMarkdown(markdown) {
     .replace(/(?<!\*)\*(?!\*)([^\s][^*]*?[^\s])\*(?!=\*)/gim, `<i class="italic">$1</i>`)
 
     // Inline Code (`code`) - FIXED!
-    .replace(/`([^`]+)`/gim, `<code class="bg-gray-200 text-red-600 px-2 py-1 rounded text-sm font-mono border border-gray-400">$1</code>`)
+   
 
-    // Code Blocks (```code```)
+
     .replace(/```([\s\S]*?)```/gim, (match, p1) => {
       const codeContent = p1.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       return `
@@ -27,6 +27,11 @@ export function parseMarkdown(markdown) {
           <pre><code class="whitespace-pre-wrap">${codeContent}</code></pre>
         </div>`;
     })
+
+    // Code Blocks (```code```)
+    .replace(/`([^`]+)`/gim,
+      `<code class="bg-gray-600 text-gray-200 px-2 py-1 rounded text-sm font-mono border border-gray-400">$1</code>`
+    )
 
     // Blockquotes (> text)
     .replace(/^> (.*$)/gim, `<blockquote class="border-l-4 border-gray-500 pl-4 italic text-gray-700">$1</blockquote>`)
