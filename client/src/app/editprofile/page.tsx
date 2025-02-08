@@ -55,7 +55,9 @@ const EditProfilePage = () => {
 
 
     try {
-      await updateUser({ variables: { id: userId, ...updatedFields } });
+      await updateUser({ variables: {
+           id: userId,
+           ...updatedFields } });
       alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);

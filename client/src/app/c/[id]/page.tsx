@@ -5,7 +5,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
 import { GET_MESSAGES } from "../../../graphql/queries/messages";
 import { useChatStore } from "../../../hook/useChatStore";
-import ReactMarkdown from "react-markdown";
+import { parseMarkdown } from "../../components/markdown";
 
 const QAPage: React.FC = () => {
   const params = useParams();
@@ -53,9 +53,14 @@ const QAPage: React.FC = () => {
           <div className="p-6">
             <div className="mb-6 flex">
               <span className="text-yellow-400 text-xl py-1">★</span>
-              <ReactMarkdown className="text-lg leading-relaxed mt-2 pl-1">
-                {message.childMessages[0]?.content || ""}
-              </ReactMarkdown>
+              
+              <div dangerouslySetInnerHTML={{ __html: parseMarkdown(message.childMessages[0]?.content || "") }} />
+              
+                 
+           
+              
+              
+              
             </div>
 
             {message.childMessages.length > 1 && (
@@ -65,7 +70,7 @@ const QAPage: React.FC = () => {
                   {message.childMessages.slice(1).map((child, index) => (
                     <li key={index} className="mb-4">
                       <strong className="text-lg text-gray-100">Answer {index + 2}:</strong>{" "}
-                      <span className="text-gray-300">{child.content}</span>
+                      <span className="text-gray-300">   <div dangerouslySetInnerHTML={{ __html: parseMarkdown(child.content) }} /></span>
                     </li>
                   ))}
                 </ul>
