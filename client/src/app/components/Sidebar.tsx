@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { GET_CHATS } from "../../graphql/queries/chats";
 import Link from "next/link";
+import SidebarFooter from "./SidebarFooter";
 
 // Define TypeScript types for the GraphQL response
 type Chat = {
@@ -143,31 +144,7 @@ export default function Sidebar() {
 
       {/* Footer Section */}
       <div className="border-t border-gray-700 pt-4">
-        <ul className={`${isSidebarOpen ? "space-y-4" : "space-y-2"}`}>
-          {[
-            { label: "Gem manager", icon: "💎" },
-            { label: "Help", icon: "❓" },
-            { label: "Activity", icon: "🔄" },
-            { label: "Settings", icon: "⚙️" },
-          ].map((item, index) => (
-            <li key={index} className="flex items-center">
-              <span className="text-lg mr-3">{item.icon}</span>
-              {isSidebarOpen && (
-                <a href="#" className="text-sm hover:text-gray-300 transition-colors">
-                  {item.label}
-                </a>
-              )}
-            </li>
-          ))}
-        </ul>
-        {isSidebarOpen && (
-          <div className="mt-4 text-sm text-gray-500">
-            <p>Patna, Bihar, India</p>
-            <a href="#" className="hover:underline hover:text-gray-300 transition-colors">
-              Update location
-            </a>
-          </div>
-        )}
+       <SidebarFooter isSidebarOpen={isSidebarOpen}/>
       </div>
     </div>
   );

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { RESET_PASSWORD } from "../../graphql/queries/resetPassword";
 import { useSearchParams, useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify"; // Import for toast notifications
+import "react-toastify/dist/ReactToastify.css"; // Import CSS for Toast notifications
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -19,26 +21,27 @@ export default function ResetPasswordPage() {
 
   const handleResetPassword = async () => {
     if (!password || password.length < 6) {
-      setError("Password must be at least 6 characters long.");
+      toast.error("Password must be at least 6 characters long.");
       return;
     }
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
 
     try {
       await resetPassword({ variables: { email, newPassword: password } });
       setSuccess(true);
-      alert("Password reset successfully!");
-      router.push("/sign_in");
+      toast.success("Password reset successfully! Redirecting...");
+      setTimeout(() => router.push("/sign_in"), 2000);
     } catch (error) {
-      setError("Failed to reset password. Please try again.");
+      toast.error("Failed to reset password. Please try again.");
     }
   };
 
   return (
     <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-md">
+      <ToastContainer /> {/* Toast notifications container */}
       <h1 className="text-3xl font-bold text-center text-blue-600">proxima</h1>
       <h2 className="mt-4 text-xl font-semibold text-center">Set New Password</h2>
       <p className="mt-2 text-center text-gray-400">Enter a new password for your account.</p>
@@ -59,8 +62,6 @@ export default function ResetPasswordPage() {
           onChange={(e) => setConfirmPassword(e.target.value)}
           className="w-full px-4 py-2 mt-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
 
         <button
           onClick={handleResetPassword}

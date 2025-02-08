@@ -18,7 +18,7 @@ const QAPage: React.FC = () => {
     skip: !chatId,
   });
 
-  const messages = getMessages(chatId); // Get messages for this chat
+  const messages = getMessages(chatId); 
 
   useEffect(() => {
     if (data?.messages) {

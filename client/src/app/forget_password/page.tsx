@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useMutation } from "@apollo/client";
 import { SEND_RESET_CODE } from "../../graphql/queries/sendResetcode";
 import { VERIFY_RESET_CODE } from "../../graphql/queries/verifyResetcode";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -29,9 +31,9 @@ export default function ResetPassword() {
     try {
       await sendResetCode({ variables: { email } });
       setSentCode(true);
-      alert("Verification code sent to your email");
+      toast.success("Verification code sent to your email");
     } catch (error) {
-      alert("Error sending code");
+      toast.error("Error sending code");
     }
   };
 
@@ -47,23 +49,26 @@ export default function ResetPassword() {
 
       if (data?.verifyResetCode) {
         setVerified(true);
-        alert("Code verified successfully!");
+        toast.success("Code verified successfully!");
       } else {
         setCodeError("Invalid verification code");
+        toast.error("Invalid verification code");
       }
     } catch (error) {
       setCodeError("Error verifying code");
+      toast.error("Error verifying code");
     }
   };
 
   const handleContinue = () => {
     if (verified) {
-      router.push(`/reset_password?email=${email}`); // Redirect to password reset page
+      router.push(`/reset_password?email=${email}`);
     }
   };
 
   return (
     <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-md">
+      <ToastContainer /> {/* Toast Container */}
       <h1 className="text-3xl font-bold text-center text-blue-600">proxima</h1>
       <h2 className="mt-4 text-xl font-semibold text-center">Reset password</h2>
       <p className="mt-2 text-center text-gray-400">
