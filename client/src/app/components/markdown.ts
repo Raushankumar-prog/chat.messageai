@@ -1,53 +1,77 @@
-export function parseMarkdown(markdown) {
-  if (!markdown) return "";
+function generateCodeBlock(codeContent: string) {
+  return `
+    <div class="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white p-4 rounded-xl my-1 shadow-xl border border-gray-700 
+            hover:shadow-2xl hover:scale-[1.04] transition-transform duration-300 ease-in-out group overflow-hidden">
+    
+      <!-- Code container -->
+      <pre class="overflow-x-auto p-3 rounded-lg bg-gray-950/80 border border-gray-700 shadow-md">
+          <code class="whitespace-pre-wrap font-mono text-sm block">${codeContent}</code>
+      </pre>
 
-  let counter = 0; // Counter for ordered lists
+      <!-- Floating gradient highlight -->
+      <div class="absolute -top-2 -left-12 w-24 h-20 bg-purple-500/20 rounded-full blur-3xl opacity-50"></div>
+      <div class="absolute -bottom-5 -right-12 w-24 h-24 bg-blue-500/20 rounded-full blur-3xl opacity-50"></div>
+    </div>
+  `;
+}
+
+export function parseMarkdown(markdown: string) {
+  if (!markdown) return "";
 
   let html = markdown
     // Headers
-    .replace(/^### (.*$)/gim, `<h3 class="text-lg font-semibold mt-3 mb-2">$1</h3>`)
-    .replace(/^## (.*$)/gim, `<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>`)
-    .replace(/^# (.*$)/gim, `<h1 class="text-2xl font-extrabold mt-5 mb-3">$1</h1>`)
+    .replace(/^### (.*)$/gm, `<h3 class="text-lg font-semibold mt-3 mb-2">$1</h3>`)
+    .replace(/^## (.*)$/gm, `<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>`)
+    .replace(/^# (.*)$/gm, `<h1 class="text-2xl font-extrabold mt-5 mb-3">$1</h1>`)
 
     // Bold (**bold**)
-    .replace(/\*\*(.*?)\*\*/gim, `<b class="font-bold">$1</b>`)
+    .replace(/\*\*(.*?)\*\*/g, `<b class="font-bold">$1</b>`)
 
-    // Italics (*italic*) - FIXED!
-    .replace(/(?<!\*)\*(?!\*)([^\s][^*]*?[^\s])\*(?!=\*)/gim, `<i class="italic">$1</i>`)
+    // Italics (*italic*)
+    .replace(/(?<!\*)\*(?!\*)([^\s][^*]*?[^\s])\*(?!\*)/g, `<i class="italic">$1</i>`)
 
-    // Inline Code (`code`) - FIXED!
-   
-
-
-    .replace(/```([\s\S]*?)```/gim, (match, p1) => {
+    // Code Blocks (```)
+    .replace(/```([\s\S]*?)```/g, (match, p1) => {
       const codeContent = p1.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      return `
-        <div class="relative bg-gray-800 text-white p-3 rounded-md my-3">
-      
-          <pre><code class="whitespace-pre-wrap">${codeContent}</code></pre>
-        </div>`;
+      return generateCodeBlock(codeContent);
     })
 
-    // Code Blocks (```code```)
-    .replace(/`([^`]+)`/gim,
-      `<code class="bg-gray-600 text-gray-200 px-2 py-1 rounded text-sm font-mono border border-gray-400">$1</code>`
-    )
+    //inline code
+  .replace(/`(\S[^`]*\S)`/g, `<code class="bg-gray-700 text-gray-200 px-2 py-1 rounded text-sm font-mono border border-gray-600">$1</code>`)
+
+  
+
+  
+
 
     // Blockquotes (> text)
-    .replace(/^> (.*$)/gim, `<blockquote class="border-l-4 border-gray-500 pl-4 italic text-gray-700">$1</blockquote>`)
+    .replace(/^> (.*)$/gm, `<blockquote class="border-l-4 border-gray-500 pl-4 italic text-gray-400">$1</blockquote>`)
 
     // Horizontal Rules (---, ***, ___)
-    .replace(/^\s*[-*_]{3,}\s*$/gim, `<hr class="border-t-2 border-gray-300 my-4" />`)
+    .replace(/^\s*[-*_]{3,}\s*$/gm, `<hr class="border-t-2 border-gray-300 my-4" />`)
 
-    // Convert Unordered Lists (*) to Ordered Lists (1., 2., 3.)
-    .replace(/^\s*\*\s(.*$)/gim, (match, p1, offset, string) => {
-      counter++; // Increment counter
-      return `<li class="list-decimal ml-5">${counter}. ${p1}</li>`;
-    })
-    .replace(/(<li class="list-decimal ml-5">.*<\/li>)/gim, `<ol class="list-outside ml-4 space-y-1">$1</ol>`)
+
+    
+.replace(/^\s*[*+-]\s(.*)$/gm, `<li class="ml-5 list-disc">$1</li>`)
+.replace(/(?:<li class="ml-5 list-disc">.*<\/li>\n?)+/g, (match) => {
+  return `<ul class="list-outside ml-4 space-y-1">${match}</ul>`;
+})
+.replace(/^\s*\d+\.\s(.*)$/gm, `<li class="ml-5 list-decimal">$1</li>`)
+.replace(/(?:<li class="ml-5 list-decimal">.*<\/li>\n?)+/g, (match) => {
+  return `<ol class="list-outside ml-4 space-y-1">${match}</ol>`;
+})
+
+
+
+
+.replace(/(<li class="ml-5 list-decimal">)(.*)(<\/li>)/g, `$1<p class="inline-block">$2</p>$3`)
+
+
 
     // Preserve Line Breaks
-    .replace(/\n/g, "<br />");
+.replace(/\n(?!\d+\.|[*+-])(?=\S)(?!<\/?code>)/g, "<br />")
+
+
 
   return html;
 }
