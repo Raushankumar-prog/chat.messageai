@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ApolloError } from "apollo-server";
+import { messageResolvers } from "../../graphql/resolvers/message.resolver.js";
 
-// Initialize the GoogleGenerativeAI model
 const apiKey = process.env.GEMINI_API_KEY;
 
 if (!apiKey) {
@@ -25,11 +25,31 @@ export const askairesolvers = {
   },
 
   Mutation: {
-    askAI: async (_: any, { message }: { message: string }) => {
+    askAI: async (_: any, { message,chatId }: { message: string ,chatId:string }) => {
       try {
-        
-        const chatSession = model.startChat({ generationConfig, history: [] });
+        const chatHistory = await messageResolvers.Query.messages(_, { chatId });
+                      
+        const history = [];
 
+        for (const msg of chatHistory) {
+          history.push({
+            role: "user", // User message
+            parts: [{ text: msg.content }],
+          });
+
+          if (msg.childMessages && msg.childMessages.length > 0) {
+            history.push({
+              role: "model", // AI response
+              parts: [{ text: msg.childMessages[0].content }],
+            });
+          }
+        }
+
+
+        
+        
+        const chatSession = model.startChat({ generationConfig, history });
+        
      
         const result = await chatSession.sendMessage(message);
 

@@ -14,7 +14,7 @@ export default function ChatInput() {
   const [input, setInput] = useState("");
   const pathname = usePathname();
   const router = useRouter();
-  const { addMessage, setShouldScroll, updateMessage } = useChatStore();
+  const {addChat, addMessage, setShouldScroll, updateMessage } = useChatStore();
   const [askAI] = useMutation(ASK_AI);
   const [saveAns] = useMutation(SAVE_ANS);
   const [createTitle] = useMutation(CREATETITLE);
@@ -41,7 +41,7 @@ export default function ChatInput() {
 
       setWaitingForResponseMessageId(newMessage.id);
       try {
-        const { data } = await askAI({ variables: { message: input } });
+        const { data } = await askAI({ variables: { message: input, chatId } });
         const response = data?.askAI?.response;
 
         if (response) {
@@ -70,32 +70,38 @@ export default function ChatInput() {
     }
   };
 
-  const handleCreateChatAndSend = async () => {
-    if (!input.trim()) return;
+ const handleCreateChatAndSend = async () => {
+  if (!input.trim()) return;
 
-    try {
-      const titlePrompt = `"${input}" but do not answer it. Instead, provide a concise title for it in exactly three or four words, nothing more.`;
-      const { data: titleData } = await askAI({ variables: { message: titlePrompt } });
+  try {
+    const titlePrompt = `"${input}" but do not answer it. Instead, provide a concise title for it in exactly three or four words, nothing more.`;
+    const { data: titleData } = await askAI({ variables: { message: titlePrompt } });
 
-      const title = titleData?.askAI?.response;
-      if (!title || title.split(" ").length > 4) {
-        console.error("Error: AI did not return a valid 3-4 word title");
-        return;
-      }
-
-      const { data: chatData } = await createTitle({ variables: { title, userId: "cm61o3dwk0000slrh6747uhif" } });
-      const newChatId = chatData?.createChat?.id;
-      if (!newChatId) {
-        console.error("Error creating chat");
-        return;
-      }
-
-      setNewChatId(newChatId);
-      router.push(`/c/${newChatId}`);
-    } catch (error) {
-      console.error("Error in localhost logic: ", error);
+    const title = titleData?.askAI?.response;
+    if (!title || title.split(" ").length > 4) {
+      console.error("Error: AI did not return a valid 3-4 word title");
+      return;
     }
-  };
+
+    const { data: chatData } = await createTitle({
+      variables: { title, userId: "cm61o3dwk0000slrh6747uhif" },
+    });
+
+    const newChatId = chatData?.createChat?.id;
+    if (!newChatId) {
+      console.error("Error creating chat");
+      return;
+    }
+
+    addChat({ id: newChatId, title }); // Store chat in Zustand state
+
+    setNewChatId(newChatId);
+    router.push(`/c/${newChatId}`);
+  } catch (error) {
+    console.error("Error in localhost logic: ", error);
+  }
+};
+
 
   useEffect(() => {
     if (newChatId && pathname === `/c/${newChatId}`) {

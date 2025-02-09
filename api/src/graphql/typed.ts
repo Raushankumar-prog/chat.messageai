@@ -137,6 +137,6 @@ export const typeDefs = gql`
     verifyResetCode(email: String!, code: String!): Boolean!
     resetPassword(email: String!, newPassword: String!): Boolean!
 
-    askAI(message: String!): AIResponse!
+    askAI(message: String!,chatId:String!): AIResponse!
   }
 `;

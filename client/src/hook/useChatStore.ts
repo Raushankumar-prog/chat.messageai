@@ -1,25 +1,33 @@
 import { create } from "zustand";
 
+type Chat = {
+  id: string;
+  title: string;
+};
+
 type Message = {
   id: string;
   content: string;
-  childMessages: string[]; // Store only child message IDs
+  childMessages: string[];
 };
 
 type ChatStore = {
-  messagesByChatId: Record<string, Record<string, Message>>; // Store messages by ID
+  messagesByChatId: Record<string, Record<string, Message>>;
+  chats: Chat[]; // Store chat titles
   addMessage: (chatId: string, message: Message) => void;
   updateMessage: (chatId: string, messageId: string, updates: Partial<Message>) => void;
   getMessages: (chatId: string) => Message[];
   shouldScroll: boolean;
   setShouldScroll: (shouldScroll: boolean) => void;
+  addChat: (chat: Chat) => void; // Add new chat at the top
+  updateChats: (chats: Chat[]) => void; // Update chats list when GET_CHATS runs
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
   messagesByChatId: {},
+  chats: [],
 
   addMessage: (chatId, message) => {
-    console.log(`Adding message ${message.id} to chat ${chatId}`);
     set((state) => ({
       messagesByChatId: {
         ...state.messagesByChatId,
@@ -32,10 +40,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   updateMessage: (chatId, messageId, updates) => {
-    console.log(`Updating message ${messageId} in chat ${chatId}:`, updates);
     set((state) => {
       const chatMessages = state.messagesByChatId[chatId] || {};
-      if (!chatMessages[messageId]) return state; // Message not found
+      if (!chatMessages[messageId]) return state;
 
       return {
         messagesByChatId: {
@@ -56,7 +63,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   shouldScroll: true,
   setShouldScroll: (shouldScroll) => {
-    console.log("Setting shouldScroll:", shouldScroll);
     set({ shouldScroll });
+  },
+
+  addChat: (chat) => {
+    set((state) => ({
+      chats: [chat, ...state.chats], // Prepend new chat at the top
+    }));
+  },
+
+  updateChats: (chats) => {
+    set({ chats });
   },
 }));
