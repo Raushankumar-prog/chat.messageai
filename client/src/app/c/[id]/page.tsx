@@ -5,8 +5,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
 import { GET_MESSAGES } from "../../../graphql/queries/messages";
 import { useChatStore } from "../../../hook/useChatStore";
-import { parseMarkdown } from "../../components/markdown";
-import ReactMarkdown from 'react-markdown';
+import UsingReactMarkdown from "../../components/reactmarkdown";
 
 const QAPage: React.FC = () => {
   const params = useParams();
@@ -19,17 +18,13 @@ const QAPage: React.FC = () => {
     skip: !chatId,
   });
 
-  const messages = getMessages(chatId); 
-
-  
+  const messages = getMessages(chatId);
 
   useEffect(() => {
     if (data?.messages) {
       data.messages.forEach((msg: any) => addMessage(chatId, msg));
     }
   }, [data, addMessage, chatId]);
-
-
 
   useEffect(() => {
     if (shouldScroll && latestMessageRef.current) {
@@ -38,13 +33,11 @@ const QAPage: React.FC = () => {
     }
   }, [shouldScroll, setShouldScroll, messages]);
 
-
-
   if (loading) return <p className="text-white">Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200 px-6 py-12 flex flex-col items-center">
+    <div className="min-h-screen bg-gray-900 text-gray-200 px-6 py-12 flex flex-col items-start">
       {messages.map((message, index) => (
         <div
           key={message.id}
@@ -52,30 +45,25 @@ const QAPage: React.FC = () => {
           className="w-full max-w-4xl mb-10"
         >
           {/* Question */}
-     <div className="flex justify-end">
-  <div className="bg-black-900 text-white p-6 shadow-xl border border-gray-600 rounded-2xl max-w-xl ml-auto my-6">
-    <h1 className="text-lg leading-relaxed whitespace-pre-wrap break-words">{message.content}</h1>
-  </div>
-</div>
-
+          <div className="flex justify-end">
+            <div className="bg-black-900 text-white p-6 shadow-xl border border-gray-600 rounded-2xl max-w-xl ml-auto my-6">
+              <h1 className="text-lg leading-relaxed whitespace-pre-wrap break-words">{message.content}</h1>
+            </div>
+          </div>
 
           {/* Answer Section */}
           <div className="p-6">
             <div className="mb-6 flex">
-           <span className="relative text-yellow-400 text-4xl py-2">
-  <span className="absolute -top-2 -left-2 text-white opacity-80 animate-ping">✨</span>
-  <span className="animate-bounce">🌟</span>
-  <span className="absolute -bottom-2 -right-2 text-white opacity-80 animate-ping">✨</span>
-</span>
+              <span className="relative text-yellow-400 text-4xl py-2">
+                <span className="absolute -top-2 -left-2 text-white opacity-80 animate-ping">✨</span>
+                <span className="animate-bounce">🌟</span>
+                <span className="absolute -bottom-2 -right-2 text-white opacity-80 animate-ping">✨</span>
+              </span>
 
-              
-              <div dangerouslySetInnerHTML={{ __html: parseMarkdown(message.childMessages[0]?.content || "") }} />
-              
-                 
-           
-              
-              
-              
+              {/* Render Markdown using UsingReactMarkdown */}
+              <div className="ml-4">
+                <UsingReactMarkdown markdown={message.childMessages[0]?.content || ""} />
+              </div>
             </div>
 
             {message.childMessages.length > 1 && (
@@ -85,7 +73,9 @@ const QAPage: React.FC = () => {
                   {message.childMessages.slice(1).map((child, index) => (
                     <li key={index} className="mb-4">
                       <strong className="text-lg text-gray-100">Answer {index + 2}:</strong>{" "}
-                      <span className="text-gray-300">   <div dangerouslySetInnerHTML={{ __html: parseMarkdown(child.content) }} /></span>
+                      <span className="text-gray-300">
+                        <UsingReactMarkdown markdown={child.content} />
+                      </span>
                     </li>
                   ))}
                 </ul>
