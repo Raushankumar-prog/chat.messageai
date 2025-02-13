@@ -9,7 +9,7 @@ import { GET_USER } from "../../graphql/queries/user";
 import { UPDATE_USER } from "../../graphql/queries/updateUser";
 
 const EditProfilePage = () => {
-  const userId = "cm6riizex0001ts4wwjbxz18n"; 
+  const userId = "cm71vb07o0000tsc09ro3wotc"; 
   const { data, loading, error } = useQuery(GET_USER, { variables: { userId } });
   const [updateUser] = useMutation(UPDATE_USER);
 

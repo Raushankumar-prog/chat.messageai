@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoSettingsSharp } from "react-icons/io5"; 
 
-const userId = "cm6riizex0001ts4wwjbxz18n"; 
+const userId = "cm71vb07o0000tsc09ro3wotc"; 
 
 const SidebarFooter = ({ isSidebarOpen }) => {
   const { data, loading, error } = useQuery(GET_USER, {

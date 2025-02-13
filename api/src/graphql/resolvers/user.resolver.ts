@@ -16,9 +16,12 @@ export const userResolvers = {
       if (existingUser) {
         throw new Error("User already exists with this email");
       }
+       let hashedPassword;
+  if(args?.password){
+   hashedPassword = args.password ? await bcrypt.hash(args.password, 10) : null;
 
-      const hashedPassword = args.password ? await bcrypt.hash(args.password, 10) : null;
-
+  }
+    
       return prisma.user.create({
         data: {
           email: args.email,

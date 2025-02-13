@@ -13,14 +13,14 @@ type Message = {
 
 type ChatStore = {
   messagesByChatId: Record<string, Record<string, Message>>;
-  chats: Chat[]; // Store chat titles
+  chats: Chat[];
   addMessage: (chatId: string, message: Message) => void;
-  updateMessage: (chatId: string, messageId: string, updates: Partial<Message>) => void;
+  updateMessage: (chatId: string, messageId: string, updates: Partial<Message>) => Promise<void>;
   getMessages: (chatId: string) => Message[];
   shouldScroll: boolean;
   setShouldScroll: (shouldScroll: boolean) => void;
-  addChat: (chat: Chat) => void; // Add new chat at the top
-  updateChats: (chats: Chat[]) => void; // Update chats list when GET_CHATS runs
+  addChat: (chat: Chat) => void;
+  updateChats: (chats: Chat[]) => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -40,19 +40,23 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   updateMessage: (chatId, messageId, updates) => {
-    set((state) => {
-      const chatMessages = state.messagesByChatId[chatId] || {};
-      if (!chatMessages[messageId]) return state;
+    return new Promise<void>((resolve) => {
+      set((state) => {
+        const chatMessages = state.messagesByChatId[chatId] || {};
+        if (!chatMessages[messageId]) return state;
 
-      return {
-        messagesByChatId: {
-          ...state.messagesByChatId,
-          [chatId]: {
-            ...chatMessages,
-            [messageId]: { ...chatMessages[messageId], ...updates },
+        return {
+          messagesByChatId: {
+            ...state.messagesByChatId,
+            [chatId]: {
+              ...chatMessages,
+              [messageId]: { ...chatMessages[messageId], ...updates },
+            },
           },
-        },
-      };
+        };
+      });
+
+      resolve(); // Ensure Promise resolves
     });
   },
 
@@ -68,7 +72,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   addChat: (chat) => {
     set((state) => ({
-      chats: [chat, ...state.chats], // Prepend new chat at the top
+      chats: [chat, ...state.chats],
     }));
   },
 

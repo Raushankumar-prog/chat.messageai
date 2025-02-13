@@ -5,19 +5,22 @@ export const messageResolvers = {
   Query: {
     // Fetch all messages for a specific chat
     messages: async (_: any, args: { chatId: string }) => {
-      return await prisma.message.findMany({
-        where: {
-          chatId: args.chatId,
-          role: "USER",
-        },
-        include: {
-          chat: true,
-          mediaLinks: true,
-          parentMessage: true,
-          childMessages: true,
-        },
-      });
+  return await prisma.message.findMany({
+    where: {
+      chatId: args.chatId,
+      role: "USER",
     },
+    include: {
+      chat: true,
+      mediaLinks: true,
+      parentMessage: true,
+      childMessages: true,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+},
 
     // Fetch a single message by ID
     message: async (_: any, args: { id: string }) => {

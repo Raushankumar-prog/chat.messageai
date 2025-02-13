@@ -6,6 +6,7 @@ export const typeDefs = gql`
     email: String!
     name: String
     avatar: String
+    password:String
     createdAt: String!
     updatedAt: String!
     googleId: String
@@ -21,6 +22,11 @@ export const typeDefs = gql`
     updatedAt: String!
     user: User!
     messages: [Message!]!
+  }
+
+  type Subscription {
+ 
+    aiResponse(message: String!, chatId: String!): String
   }
 
   type Message {
@@ -99,7 +105,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createUser(email: String!, name: String, avatar: String, password: String, googleId: String): User!
+    createUser(email: String!, name: String avatar: String, password: String, googleId: String): User!
     updateUser(id: ID!, name: String, email: String, avatar: String): User! 
     loginUser(email: String!, password: String, googleId: String): AuthPayload!
 

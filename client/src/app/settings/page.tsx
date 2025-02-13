@@ -7,12 +7,23 @@ import { IoLockClosedSharp, IoNotificationsSharp, IoPersonSharp, IoLogOut } from
 const SettingsPage = () => {
   const [notifications, setNotifications] = useState(true);
 
+  const handleLogout = () => {
+    // Clear all cookies
+    document.cookie.split(";").forEach((cookie) => {
+      document.cookie = cookie
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/");
+    });
+
+    // Redirect to login or home page
+    window.location.href = "/sign_in"; // Change to your login route
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white px-6">
       <div className="w-full max-w-lg p-10 bg-gray-800 rounded-2xl shadow-2xl">
         <h2 className="text-3xl font-semibold mb-6 text-center">Settings</h2>
 
-       
         <div className="flex flex-col gap-4">
           {/* Edit Profile */}
           <Link href="/editprofile">
@@ -54,7 +65,10 @@ const SettingsPage = () => {
         </div>
 
         {/* Logout Button */}
-        <button className="w-full mt-6 p-4 bg-red-600 hover:bg-red-500 text-lg font-semibold rounded-lg flex items-center justify-center space-x-2 shadow-md">
+        <button
+          className="w-full mt-6 p-4 bg-red-600 hover:bg-red-500 text-lg font-semibold rounded-lg flex items-center justify-center space-x-2 shadow-md"
+          onClick={handleLogout}
+        >
           <IoLogOut className="text-2xl" />
           <span>Logout</span>
         </button>

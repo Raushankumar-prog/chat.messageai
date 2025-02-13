@@ -14,7 +14,16 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+let app; // Declare app outside the function
+ console.log(firebaseConfig);
+try {
+ 
+ app = initializeApp(firebaseConfig);
+} catch (e) {
+ console.error("Firebase initialization error:", e);
+ // Handle the error gracefully (e.g., display an error message to the user)
+}
+
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
@@ -41,6 +50,7 @@ export function useGoogleAuth() {
     }
   };
 
+  
 
 
   const logout = async () => {

@@ -9,3 +9,9 @@ export const ASK_AI = gql`
 `;
 
 
+export const AI_RESPONSE_SUBSCRIPTION = gql`
+  subscription Subscription($message: String!, $chatId: String!) {
+    aiResponse(message: $message, chatId: $chatId)
+  }
+`;
+

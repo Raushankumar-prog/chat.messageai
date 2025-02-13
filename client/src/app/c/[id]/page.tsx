@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { GET_MESSAGES } from "../../../graphql/queries/messages";
 import { useChatStore } from "../../../hook/useChatStore";
 import { parseMarkdown } from "../../components/markdown";
+import ReactMarkdown from 'react-markdown';
 
 const QAPage: React.FC = () => {
   const params = useParams();
@@ -20,11 +21,15 @@ const QAPage: React.FC = () => {
 
   const messages = getMessages(chatId); 
 
+  
+
   useEffect(() => {
     if (data?.messages) {
       data.messages.forEach((msg: any) => addMessage(chatId, msg));
     }
   }, [data, addMessage, chatId]);
+
+
 
   useEffect(() => {
     if (shouldScroll && latestMessageRef.current) {
@@ -32,6 +37,8 @@ const QAPage: React.FC = () => {
       setShouldScroll(false);
     }
   }, [shouldScroll, setShouldScroll, messages]);
+
+
 
   if (loading) return <p className="text-white">Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
@@ -45,14 +52,22 @@ const QAPage: React.FC = () => {
           className="w-full max-w-4xl mb-10"
         >
           {/* Question */}
-          <div className="bg-gray-800 text-sky-300 p-6 shadow-lg ml-96 mb-6 rounded-2xl">
-            <h1 className="text-lg">{message.content}</h1>
-          </div>
+     <div className="flex justify-end">
+  <div className="bg-black-900 text-white p-6 shadow-xl border border-gray-600 rounded-2xl max-w-xl ml-auto my-6">
+    <h1 className="text-lg leading-relaxed whitespace-pre-wrap break-words">{message.content}</h1>
+  </div>
+</div>
+
 
           {/* Answer Section */}
           <div className="p-6">
             <div className="mb-6 flex">
-              <span className="text-yellow-400 text-xl py-1">★</span>
+           <span className="relative text-yellow-400 text-4xl py-2">
+  <span className="absolute -top-2 -left-2 text-white opacity-80 animate-ping">✨</span>
+  <span className="animate-bounce">🌟</span>
+  <span className="absolute -bottom-2 -right-2 text-white opacity-80 animate-ping">✨</span>
+</span>
+
               
               <div dangerouslySetInnerHTML={{ __html: parseMarkdown(message.childMessages[0]?.content || "") }} />
               

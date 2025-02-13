@@ -3,6 +3,8 @@ import { messageResolvers } from "./message.resolver.js";
 import { userResolvers } from "./user.resolver.js";
 import { askairesolvers } from "../../ai/gemini/textgeneration.js";
 import { resetresolvers } from "./reset.resolver.js";
+import { aiResponseSubscription } from "../../schema.js";
+import {  GraphQLString } from 'graphql';
 
 export const resolvers = {
   Query: {
@@ -16,5 +18,15 @@ export const resolvers = {
     ...chatResolvers.Mutation,
     ...askairesolvers.Mutation,
     ...resetresolvers.Mutation
+  },
+  Subscription: {
+     aiResponse: {
+            type: GraphQLString,
+            args: {
+              message: { type: GraphQLString },
+              chatId: { type: GraphQLString },
+            },
+            subscribe: aiResponseSubscription,
+          },
   },
 };

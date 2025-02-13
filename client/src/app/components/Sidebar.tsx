@@ -27,7 +27,7 @@ export default function Sidebar() {
 
 
   const { data, loading, error} = useQuery<GetChatsResponse>(GET_CHATS, {
-    variables: { userId: "cm61o3dwk0000slrh6747uhif" },
+    variables: { userId: "cm71vb07o0000tsc09ro3wotc" },
   });
 
   
