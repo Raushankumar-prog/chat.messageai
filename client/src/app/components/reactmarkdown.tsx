@@ -5,6 +5,8 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/tomorrow-night-bright.css";
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import React from 'react';
+
 
 const components = {
   h1: (props) => <h1 className="text-2xl font-extrabold mt-5 mb-3" {...props} />,
@@ -33,12 +35,25 @@ const components = {
     const language = className?.replace("language-", "") ?? "code";
     const [isCopied, setIsCopied] = useState(false);
   
-    const copyToClipboard = () => {
-      navigator.clipboard.writeText(children).then(() => {
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-      });
-    };
+  const copyToClipboard = () => {
+  const text = React.Children.toArray(children)
+    .map(child => {
+      if (typeof child === 'string') {
+        return child;
+      }
+      if (React.isValidElement(child) && typeof child.props.children === 'string') {
+        return child.props.children;
+      }
+      return '';
+    })
+    .join('');
+    
+  navigator.clipboard.writeText(text).then(() => {
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  });
+};
+
   
     // Handle Inline Code: Only highlight without block styling
     if (inline) {
