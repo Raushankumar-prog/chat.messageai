@@ -22,22 +22,31 @@ export default function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
 
- 
-  const { addChat,chats, updateChats } = useChatStore();
+  // Check screen size for responsiveness
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) { // Small screen (e.g., mobile)
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
+  const { addChat, chats, updateChats } = useChatStore();
 
-  const { data, loading, error} = useQuery<GetChatsResponse>(GET_CHATS, {
+  const { data, loading, error } = useQuery<GetChatsResponse>(GET_CHATS, {
     variables: { userId: "cm71vb07o0000tsc09ro3wotc" },
   });
 
-  
- useEffect(() => {
-  if (data?.chats) {
-    updateChats(data.chats);
-  }
-}, [data, updateChats,addChat]);
-
-
+  useEffect(() => {
+    if (data?.chats) {
+      updateChats(data.chats);
+    }
+  }, [data, updateChats, addChat]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const toggleShowMore = () => setIsExpanded(!isExpanded);
@@ -71,7 +80,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Fixed "New Chat" Button */}
+      {/* New Chat Button */}
       {isSidebarOpen && (
         <div className="mb-4">
           <Link href="/">
@@ -119,37 +128,8 @@ export default function Sidebar() {
                 ))
               )}
             </ul>
-
-            {/* Show More/Show Less Button */}
-            {isSidebarOpen && chats.length > 5 && (
-              <button
-                onClick={toggleShowMore}
-                className="flex items-center text-sm font-serif text-gray-500 hover:text-gray-300 transition-colors mt-2"
-              >
-                <span>{isExpanded ? "Show less" : "Show more"}</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`w-4 h-4 ml-1 transform transition-transform ${
-                    isExpanded ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-            )}
           </div>
         </ScrollArea.Viewport>
-        <ScrollArea.Scrollbar
-          orientation="vertical"
-          className="bg-gray-700 rounded-full hover:bg-gray-600 transition-colors"
-        >
-          <ScrollArea.Thumb className="bg-gray-500 rounded-full" />
-        </ScrollArea.Scrollbar>
-        <ScrollArea.Corner className="bg-gray-700" />
       </ScrollArea.Root>
 
       {/* Footer Section */}

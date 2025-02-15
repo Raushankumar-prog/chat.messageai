@@ -24,19 +24,20 @@ export default function Header() {
       { name: "GPT-4o", tokens: "200", type: "Ultra" },
       { name: "GPT-4o Mini", tokens: "160", type: "Compact" }
     ],
-    "DeepSeek Models": [
-      { name: "DeepSeek-Chat", tokens: "140", type: "Advanced" },
-      { name: "DeepSeek-Lite", tokens: "100", type: "Lite" }
-    ],
+    // "DeepSeek Models": [
+    //   { name: "DeepSeek-Chat", tokens: "140", type: "Advanced" },
+    //   { name: "DeepSeek-Lite", tokens: "100", type: "Lite" }
+    // ],
     "Claude Models": [
       { name: "Claude-1", tokens: "90", type: "Standard" },
       { name: "Claude-2", tokens: "120", type: "Advanced" },
       { name: "Claude-3", tokens: "150", type: "Premium" }
     ],
-    "Mistral Models": [
-      { name: "Mistral-7B", tokens: "110", type: "Efficient" },
-      { name: "Mixtral-8x7B", tokens: "170", type: "Premium" }
-    ]
+    // "Mistral Models": [
+    //   { name: "Mistral-7B", tokens: "110", type: "Efficient" },
+    //   { name: "Mixtral-8x7B", tokens: "170", type: "Premium" }
+    // ],
+    
   };
 
   return (

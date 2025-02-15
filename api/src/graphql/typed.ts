@@ -27,6 +27,8 @@ export const typeDefs = gql`
   type Subscription {
  
     aiResponse(message: String!, chatId: String!): String
+     openairesponse(message: String!, chatId: String!): String
+     deepsakeresponse(message: String!, chatId: String!): String
   }
 
   type Message {

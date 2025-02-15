@@ -29,6 +29,10 @@ async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+//this is function for generation of text response based on  the gemini model
+
+
 export async function* aiResponseSubscription(_, args) {
   try {
     const { message, chatId } = args;
@@ -62,6 +66,9 @@ export async function* aiResponseSubscription(_, args) {
     throw new Error(`Subscription error: ${error.message}`);
   }
 }
+
+
+
 
 
 
