@@ -13,7 +13,10 @@ export const userResolvers = {
             if (existingUser) {
                 throw new Error("User already exists with this email");
             }
-            const hashedPassword = args.password ? await bcrypt.hash(args.password, 10) : null;
+            let hashedPassword;
+            if (args?.password) {
+                hashedPassword = args.password ? await bcrypt.hash(args.password, 10) : null;
+            }
             return prisma.user.create({
                 data: {
                     email: args.email,
@@ -28,6 +31,9 @@ export const userResolvers = {
             const user = await prisma.user.findUnique({ where: { email: args.email } });
             if (!user) {
                 throw new Error("User not found");
+            }
+            if (!user.email) {
+                throw new Error("User email is missing in the database");
             }
             if (args.googleId) {
                 if (user.googleId !== args.googleId) {
@@ -48,6 +54,27 @@ export const userResolvers = {
             }
             const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
             return { token, user };
+        },
+        updateUser: async (_, args) => {
+            const existingUser = await prisma.user.findUnique({ where: { id: args.id } });
+            if (!existingUser) {
+                throw new Error("User not found");
+            }
+            // Check if email is unique if being updated
+            if (args.email && args.email !== existingUser.email) {
+                const emailTaken = await prisma.user.findUnique({ where: { email: args.email } });
+                if (emailTaken) {
+                    throw new Error("Email already in use by another user");
+                }
+            }
+            return prisma.user.update({
+                where: { id: args.id },
+                data: {
+                    name: args.name ?? existingUser.name,
+                    email: args.email ?? existingUser.email,
+                    avatar: args.avatar ?? existingUser.avatar,
+                },
+            });
         },
     },
 };

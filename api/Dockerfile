@@ -23,4 +23,4 @@ RUN npx prisma generate
 EXPOSE 3000
 
 # Start the application.
-CMD ["yarn", "run", "start"]
+CMD ["yarn", "start"]

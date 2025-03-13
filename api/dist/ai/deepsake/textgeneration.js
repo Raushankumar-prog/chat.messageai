@@ -1,7 +1,10 @@
 import { OpenAI } from "openai";
 import { messageResolvers } from "../../graphql/resolvers/message.resolver.js";
-const openai = new OpenAI();
-export default async function getOpenai(_, args) {
+const openai = new OpenAI({
+    baseURL: 'https://api.deepseek.com',
+    apiKey: process.env.DEEPSAKE_API_KEY
+});
+export default async function getdeepsakeai(_, args) {
     // const { message, chatId } = args;
     const chatHistory = await messageResolvers.Query.messages(_, { chatId: "cm74fsg4j0001tsmcxlbu6pos" });
     const history = [];
@@ -22,7 +25,7 @@ export default async function getOpenai(_, args) {
         role: "user", content: "what we talk yet"
     });
     const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "deepseek-chat",
         messages: history,
     });
     console.log(completion.choices[0].message.content);

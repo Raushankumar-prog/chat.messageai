@@ -4,7 +4,8 @@ export const messageResolvers = {
         // Fetch all messages for a specific chat
         messages: async (_, args) => {
             return await prisma.message.findMany({
-                where: { chatId: args.chatId,
+                where: {
+                    chatId: args.chatId,
                     role: "USER",
                 },
                 include: {
@@ -12,6 +13,9 @@ export const messageResolvers = {
                     mediaLinks: true,
                     parentMessage: true,
                     childMessages: true,
+                },
+                orderBy: {
+                    createdAt: "asc",
                 },
             });
         },
@@ -35,9 +39,19 @@ export const messageResolvers = {
                 data: {
                     content: args.content,
                     role: args.role,
-                    chatId: args.chatId,
-                    parentMessageId: args.parentMessageId || null,
-                    mediaLinks: args.mediaLinks
+                    chat: { connect: { id: args.chatId } },
+                    childMessages: args.childMessage
+                        ? {
+                            create: [
+                                {
+                                    content: args.childMessage.content,
+                                    role: args.childMessage.role,
+                                    chat: { connect: { id: args.chatId } }, // Ensure child message is linked properly
+                                },
+                            ],
+                        }
+                        : undefined,
+                    mediaLinks: args.mediaLinks?.length
                         ? {
                             create: args.mediaLinks.map((mediaLink) => ({
                                 url: mediaLink.url,
@@ -49,11 +63,10 @@ export const messageResolvers = {
                 include: {
                     chat: true,
                     mediaLinks: true,
-                    parentMessage: true,
                     childMessages: true,
                 },
             });
-        },
+        }, // **Fixed: Added a comma here**
         // Update an existing message
         updateMessage: async (_, args) => {
             return await prisma.message.update({

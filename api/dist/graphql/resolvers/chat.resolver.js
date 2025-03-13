@@ -8,6 +8,9 @@ export const chatResolvers = {
                     user: true,
                     messages: true,
                 },
+                orderBy: {
+                    createdAt: "desc", // Sorting in descending order
+                },
             });
         },
         chatone: async (_, args) => {
