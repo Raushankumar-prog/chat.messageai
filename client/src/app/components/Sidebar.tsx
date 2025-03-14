@@ -37,7 +37,7 @@ export default function Sidebar() {
   const { addChat, chats, updateChats } = useChatStore();
 
   const { data, loading, error } = useQuery<GetChatsResponse>(GET_CHATS, {
-    variables: { userId: "cm71vb07o0000tsc09ro3wotc" },
+    variables: { userId: "cm88ta8po0001mk1b1w4ro48u" },
   });
 
   useEffect(() => {

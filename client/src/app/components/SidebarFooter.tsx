@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoSettingsSharp } from "react-icons/io5"; 
 
-const userId = "cm71vb07o0000tsc09ro3wotc"; 
+const userId = "cm88ta8po0001mk1b1w4ro48u"; 
 
 
 interface SidebarFooterProps {

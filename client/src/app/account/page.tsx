@@ -6,7 +6,7 @@ import Image from "next/image";
 import { IoWalletSharp, IoCardSharp, IoPersonSharp } from "react-icons/io5";
 import Link from "next/link";
 
-const userId = "cm6riizex0001ts4wwjbxz18n";
+const userId = "cm88ta8po0001mk1b1w4ro48u";
 
 const AccountPage = () => {
   const { data, loading, error } = useQuery(GET_USER, {

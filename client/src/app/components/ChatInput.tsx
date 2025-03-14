@@ -95,7 +95,7 @@ export default function ChatInput() {
       }
 
       const { data: chatData } = await createTitle({
-        variables: { title, userId: "cm71vb07o0000tsc09ro3wotc" },
+        variables: { title, userId: "cm88ta8po0001mk1b1w4ro48u" },
       });
 
       const newChatId = chatData?.createChat?.id;
