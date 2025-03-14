@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "npx tsx src/index.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
     "seed": "node --loader ts-node/esm prisma/seed.ts"
