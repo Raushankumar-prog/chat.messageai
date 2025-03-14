@@ -5,10 +5,8 @@ const openai = new OpenAI({
     apiKey: process.env.DEEPSAKE_API_KEY
 });
 export default async function getdeepsakeai(_, args) {
-    // const { message, chatId } = args;
     const chatHistory = await messageResolvers.Query.messages(_, { chatId: "cm74fsg4j0001tsmcxlbu6pos" });
     const history = [];
-    //history
     for (const msg of chatHistory) {
         history.push({
             role: 'user',
@@ -16,13 +14,14 @@ export default async function getdeepsakeai(_, args) {
         });
         if (msg.childMessages && msg.childMessages.length > 0) {
             history.push({
-                role: 'system',
+                role: 'assistant', // Changed from 'system' to 'assistant'
                 content: msg.childMessages[0].content,
             });
         }
     }
     history.push({
-        role: "user", content: "what we talk yet"
+        role: 'user',
+        content: "what we talk yet"
     });
     const completion = await openai.chat.completions.create({
         model: "deepseek-chat",

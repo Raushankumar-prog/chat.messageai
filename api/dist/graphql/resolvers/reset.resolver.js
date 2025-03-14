@@ -8,7 +8,7 @@ export const resetresolvers = {
     Mutation: {
         sendResetCode: async (_, { email }) => {
             const code = Math.floor(100000 + Math.random() * 900000).toString();
-            verificationCodes[email] = { code, timestamp: Date.now() }; // Store code with timestamp
+            verificationCodes[email] = { code, timestamp: Date.now() };
             const transporter = nodemailer.createTransport({
                 service: "gmail",
                 auth: {
@@ -27,14 +27,13 @@ export const resetresolvers = {
         verifyResetCode: (_, { email, code }) => {
             const entry = verificationCodes[email];
             if (!entry)
-                return false; // No code found
+                return false;
             const { code: storedCode, timestamp } = entry;
-            // Check if the code matches and is not expired (3 minutes = 180,000 ms)
             if (storedCode === code && Date.now() - timestamp <= 180000) {
                 delete verificationCodes[email];
                 return true;
             }
-            return false; // Invalid or expired code
+            return false;
         },
         resetPassword: async (_, { email, newPassword }) => {
             const hashedPassword = await bcrypt.hash(newPassword, 10);

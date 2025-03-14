@@ -4,13 +4,18 @@ import prisma from "../../server.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-const verificationCodes = {}; 
+interface VerificationCode {
+  code: string;
+  timestamp: number;
+}
+
+const verificationCodes: Record<string, VerificationCode> = {}; 
 
 export const resetresolvers = {
   Mutation: {
-    sendResetCode: async (_, { email }) => {
+    sendResetCode: async (_: unknown, { email }: { email: string }) => {
       const code = Math.floor(100000 + Math.random() * 900000).toString();
-      verificationCodes[email] = { code, timestamp: Date.now() }; // Store code with timestamp
+      verificationCodes[email] = { code, timestamp: Date.now() };
 
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -30,24 +35,29 @@ export const resetresolvers = {
       return true;
     },
 
-    verifyResetCode: (_, { email, code }) => {
+    verifyResetCode: (
+      _: unknown, 
+      { email, code }: { email: string; code: string }
+    ) => {
       const entry = verificationCodes[email];
 
-      if (!entry) return false; // No code found
+      if (!entry) return false;
       const { code: storedCode, timestamp } = entry;
 
-      // Check if the code matches and is not expired (3 minutes = 180,000 ms)
       if (storedCode === code && Date.now() - timestamp <= 180000) {
         delete verificationCodes[email]; 
         return true;
       }
 
-      return false; // Invalid or expired code
+      return false;
     },
 
-    resetPassword: async (_: any, { email, newPassword }: { email: string; newPassword: string }) => {
+    resetPassword: async (
+      _: unknown, 
+      { email, newPassword }: { email: string; newPassword: string }
+    ) => {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-      await prisma.User.update({
+      await prisma.user.update({
         where: { email },
         data: { password: hashedPassword },
       });

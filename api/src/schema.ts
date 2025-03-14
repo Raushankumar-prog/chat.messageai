@@ -2,7 +2,7 @@ import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { messageResolvers } from './graphql/resolvers/message.resolver.js';
 
-const apiKey = process.env.GEMINI_API_KEY;
+const apiKey: string | undefined = process.env.GEMINI_API_KEY;
 
 if (!apiKey) {
   throw new Error("GEMINI_API_KEY is not set in the environment variables.");
@@ -19,25 +19,25 @@ const generationConfig = {
   responseMimeType: "text/plain",
 };
 
-async function* generateGreetings() {
+async function* generateGreetings(): AsyncGenerator<{ greetings: string }> {
   for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
     yield { greetings: hi };
   }
 }
 
-async function delay(ms) {
+async function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
-//this is function for generation of text response based on  the gemini model
-
-
-export async function* aiResponseSubscription(_, args) {
+// Function for generating text responses based on the Gemini model
+export async function* aiResponseSubscription(
+  _: unknown,
+  args: { message: string; chatId: string }
+): AsyncGenerator<{ aiResponse: string }> {
   try {
     const { message, chatId } = args;
     const chatHistory = await messageResolvers.Query.messages(_, { chatId });
-    const history = [];
+    const history: { role: string; parts: { text: string }[] }[] = [];
 
     for (const msg of chatHistory) {
       history.push({
@@ -62,18 +62,14 @@ export async function* aiResponseSubscription(_, args) {
       yield { aiResponse: word };
       await delay(1);
     }
-  } catch (error) {
-    throw new Error(`Subscription error: ${error.message}`);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(`Subscription error: ${error.message}`);
+    } else {
+      throw new Error("An unknown error occurred in aiResponseSubscription.");
+    }
   }
 }
-
-
-
-
-
-
-
-
 
 export const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -85,13 +81,12 @@ export const schema = new GraphQLSchema({
       },
     },
   }),
-
   subscription: new GraphQLObjectType({
     name: 'Subscription',
     fields: {
       greetings: {
         type: GraphQLString,
-        subscribe: async function* () {
+        subscribe: async function* (): AsyncGenerator<{ greetings: string }> {
           yield* generateGreetings();
         },
       },
