@@ -32,7 +32,7 @@ export default function ResetPassword() {
       await sendResetCode({ variables: { email } });
       setSentCode(true);
       toast.success("Verification code sent to your email");
-    } catch (error) {
+    } catch  {
       toast.error("Error sending code");
     }
   };
@@ -54,7 +54,7 @@ export default function ResetPassword() {
         setCodeError("Invalid verification code");
         toast.error("Invalid verification code");
       }
-    } catch (error) {
+    } catch  {
       setCodeError("Error verifying code");
       toast.error("Error verifying code");
     }

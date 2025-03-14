@@ -6,8 +6,7 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { GET_CHATS } from "../../graphql/queries/chats";
 import Link from "next/link";
 import SidebarFooter from "./SidebarFooter";
-import { useChatStore } from "../../hook/useChatStore"; // Zustand store
-
+import { useChatStore } from "../../hook/useChatStore";
 
 type Chat = {
   id: string;
@@ -22,10 +21,9 @@ export default function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Check screen size for responsiveness
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) { // Small screen (e.g., mobile)
+      if (window.innerWidth < 640) {
         setIsSidebarOpen(false);
       } else {
         setIsSidebarOpen(true);
@@ -57,7 +55,6 @@ export default function Sidebar() {
         isSidebarOpen ? "w-72" : "w-16"
       } h-screen bg-gray-800 text-gray-300 flex flex-col justify-between p-4 shadow-lg transition-all duration-300`}
     >
-      {/* Collapse Icon */}
       <div className="mb-4">
         <button
           className="text-gray-300 focus:outline-none hover:text-sky-400 transition-colors"
@@ -80,7 +77,6 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* New Chat Button */}
       {isSidebarOpen && (
         <div className="mb-4">
           <Link href="/">
@@ -101,7 +97,6 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Scrollable Area */}
       <ScrollArea.Root className="flex-1 overflow-hidden rounded-lg">
         <ScrollArea.Viewport className="w-full h-full">
           <div className="pr-2">
@@ -128,11 +123,47 @@ export default function Sidebar() {
                 ))
               )}
             </ul>
+
+            {isSidebarOpen && chats.length > 5 && (
+              <button
+                onClick={toggleShowMore}
+                className="flex items-center text-sm font-serif text-gray-500 hover:text-gray-300 transition-colors mt-2"
+              >
+                <span>{isExpanded ? "Show less" : "Show more"}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`w-4 h-4 ml-1 transform transition-transform ${
+                    isExpanded ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            )}
           </div>
         </ScrollArea.Viewport>
+
+        <ScrollArea.Scrollbar
+          className="flex select-none touch-none p-0.5 bg-gray-800 transition-colors duration-[160ms] ease-out hover:bg-gray-700 data-[orientation=vertical]:w-2.5"
+          orientation="vertical"
+        >
+          <ScrollArea.Thumb className="flex-1 bg-gray-600 rounded-[10px] relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-full before:min-w-[44px] before:min-h-[44px]" />
+        </ScrollArea.Scrollbar>
+
+        <ScrollArea.Scrollbar
+          className="flex select-none touch-none p-0.5 bg-gray-800 transition-colors duration-[160ms] ease-out hover:bg-gray-700 data-[orientation=horizontal]:h-2.5"
+          orientation="horizontal"
+        >
+          <ScrollArea.Thumb className="flex-1 bg-gray-600 rounded-[10px] relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-full before:min-w-[44px] before:min-h-[44px]" />
+        </ScrollArea.Scrollbar>
+
+        <ScrollArea.Corner className="bg-gray-800" />
       </ScrollArea.Root>
 
-      {/* Footer Section */}
       <div className="border-t border-gray-700 pt-4">
         <SidebarFooter isSidebarOpen={isSidebarOpen} />
       </div>

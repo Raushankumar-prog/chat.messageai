@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [name, setName] = useState<string | null>(null);
+ // const [name, setName] = useState<string | null>(null);
 
   useEffect(() => {
     const storedName = Cookies.get("token");
@@ -15,7 +15,7 @@ export default function Home() {
     if (!storedName) {
       router.replace("/sign_up"); 
     } else {
-      setName(storedName);
+     // setName(storedName);
       setLoading(false); 
     }
   }, [router]);

@@ -8,7 +8,10 @@ type Chat = {
 type Message = {
   id: string;
   content: string;
-  childMessages: string[];
+  childMessages: Array<{  
+    id: string;
+    content: string;
+  }>;
 };
 
 type ChatStore = {

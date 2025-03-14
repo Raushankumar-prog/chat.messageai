@@ -6,7 +6,12 @@ import { IoSettingsSharp } from "react-icons/io5";
 
 const userId = "cm71vb07o0000tsc09ro3wotc"; 
 
-const SidebarFooter = ({ isSidebarOpen }) => {
+
+interface SidebarFooterProps {
+  isSidebarOpen: boolean;
+}
+
+const SidebarFooter: React.FC<SidebarFooterProps> = ({ isSidebarOpen }) => {
   const { data, loading, error } = useQuery(GET_USER, {
     variables: { userId },
   });

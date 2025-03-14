@@ -1,10 +1,8 @@
 "use client";
 
-       
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useChatStore } from "../../hook/useChatStore";
-import { FaMicrophone,FaPaperPlane } from "react-icons/fa";
+import { FaMicrophone, FaPaperPlane } from "react-icons/fa";
 import { usePathname, useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
 import { ASK_AI, AI_RESPONSE_SUBSCRIPTION } from "../../graphql/queries/askAi";
@@ -22,13 +20,11 @@ export default function ChatInput() {
   const [askAI] = useMutation(ASK_AI);
   const [saveAns] = useMutation(SAVE_ANS);
   const [createTitle] = useMutation(CREATETITLE);
-  const [waitingForResponseMessageId, setWaitingForResponseMessageId] = useState<string | null>(null);
   const [newChatId, setNewChatId] = useState<string | null>(null);
-  const [isStreaming, setIsStreaming] = useState(false); // Streaming flag
 
   const chatId = pathname.split("/c/")[1];
 
-  const handleSend = async (chatID?: string) => {
+  const handleSend = useCallback(async (chatID?: string) => {
     if (!input.trim()) return;
     const targetChatId = chatID || chatId;
 
@@ -42,8 +38,6 @@ export default function ChatInput() {
       addMessage(targetChatId, newMessage);
       setShouldScroll(true);
       setInput("");
-      setWaitingForResponseMessageId(newMessage.id);
-      setIsStreaming(true); // Start streaming
 
       try {
         const subscription = client.subscribe({
@@ -51,14 +45,13 @@ export default function ChatInput() {
           variables: { message: input, chatId: targetChatId },
         });
 
-        let accumulatedResponse = ""; // Store full response
+        let accumulatedResponse = "";
 
         subscription.subscribe({
           next({ data }) {
             const response = data?.aiResponse;
             if (response) {
-              accumulatedResponse += " " + response; // Accumulate response
-
+              accumulatedResponse += " " + response;
               updateMessage(targetChatId, newMessage.id, {
                 childMessages: [{ id: "ai-response", content: accumulatedResponse.trim() }],
               });
@@ -66,11 +59,8 @@ export default function ChatInput() {
           },
           error(err) {
             console.error("Subscription error:", err);
-            setIsStreaming(false); // Stop streaming on error
           },
           complete() {
-            console.log("Subscription completed.");
-            setIsStreaming(false); // Streaming is complete
             saveAns({
               variables: {
                 content: input,
@@ -87,14 +77,11 @@ export default function ChatInput() {
         });
       } catch (error) {
         console.error("Error receiving AI response: ", error);
-        setIsStreaming(false);
-      } finally {
-        setWaitingForResponseMessageId(null);
       }
     }
-  };
+  }, [input, chatId, addMessage, setShouldScroll, updateMessage, saveAns]);
 
-  const handleCreateChatAndSend = async () => {
+  const handleCreateChatAndSend = useCallback(async () => {
     if (!input.trim()) return;
 
     try {
@@ -118,60 +105,45 @@ export default function ChatInput() {
       }
 
       addChat({ id: newChatId, title });
-
       setNewChatId(newChatId);
       router.push(`/c/${newChatId}`);
     } catch (error) {
       console.error("Error creating chat: ", error);
     }
-  };
+  }, [input, askAI, createTitle, addChat, router]);
 
   useEffect(() => {
     if (newChatId && pathname === `/c/${newChatId}`) {
       handleSend(newChatId);
       setNewChatId(null);
     }
-  }, [newChatId, pathname]);
+  }, [newChatId, pathname, handleSend]);
 
-
-  
   useEffect(() => {
-     setInput("");
+    setInput("");
   }, [chatId]);
 
-
-  
-
   return (
-         <div className="fixed bottom-6 left-[33%] right-1 flex items-center gap-3">
-  <div className="relative flex items-center w-[70%] bg-gradient-to-br from-gray-900 via-gray-950 to-black bg-opacity-60 backdrop-blur-2xl text-white rounded-full px-8 py-4 shadow-[0px_0px_20px_rgba(0,0,255,0.3)] border border-gray-700 focus-within:border-blue-600 transition-all duration-500 hover:shadow-blue-600/50 hover:scale-105">
-
-    {/* Microphone Icon with Animated Glow */}
-    <FaMicrophone className="text-gray-400 cursor-pointer hover:text-blue-400 transition duration-200 mr-4 text-2xl hover:scale-110 active:scale-95 animate-pulse" />
-
-    {/* Scrollable Input Box */}
-    <ScrollArea className="w-full h-auto max-h-24 overflow-hidden">
-      <textarea
-        placeholder="Ask Gemini..."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (chatId ? handleSend() : handleCreateChatAndSend())}
-        className="w-full bg-transparent text-white placeholder-gray-400 outline-none resize-none pr-16 text-lg transition-all duration-200 focus:placeholder-gray-500 focus:text-gray-100"
-        rows={1}
-      />
-    </ScrollArea>
-
-    {/* Animated Send Button with Neon Glow */}
-    <button
-      onClick={() => {
-        chatId ? handleSend() : handleCreateChatAndSend();
-      }}
-      className="absolute right-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-125 active:scale-95 flex items-center justify-center animate-glow ring-2 ring-blue-500/50 hover:ring-purple-500/50"
-    >
-      <FaPaperPlane className="text-white text-lg" />
-    </button>
-
-  </div>
-</div>
+    <div className="fixed bottom-6 left-[33%] right-1 flex items-center gap-3">
+      <div className="relative flex items-center w-[70%] bg-gradient-to-br from-gray-900 via-gray-950 to-black bg-opacity-60 backdrop-blur-2xl text-white rounded-full px-8 py-4 shadow-[0px_0px_20px_rgba(0,0,255,0.3)] border border-gray-700 focus-within:border-blue-600 transition-all duration-500 hover:shadow-blue-600/50 hover:scale-105">
+        <FaMicrophone className="text-gray-400 cursor-pointer hover:text-blue-400 transition duration-200 mr-4 text-2xl hover:scale-110 active:scale-95 animate-pulse" />
+        <ScrollArea className="w-full h-auto max-h-24 overflow-hidden">
+          <textarea
+            placeholder="Ask Gemini..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (chatId ? handleSend() : handleCreateChatAndSend())}
+            className="w-full bg-transparent text-white placeholder-gray-400 outline-none resize-none pr-16 text-lg transition-all duration-200 focus:placeholder-gray-500 focus:text-gray-100"
+            rows={1}
+          />
+        </ScrollArea>
+        <button
+          onClick={() => chatId ? handleSend() : handleCreateChatAndSend()}
+          className="absolute right-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-125 active:scale-95 flex items-center justify-center animate-glow ring-2 ring-blue-500/50 hover:ring-purple-500/50"
+        >
+          <FaPaperPlane className="text-white text-lg" />
+        </button>
+      </div>
+    </div>
   );
 }

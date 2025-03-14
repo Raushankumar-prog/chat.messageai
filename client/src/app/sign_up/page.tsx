@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
@@ -12,20 +12,20 @@ import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [isChecked, setIsChecked] = useState<boolean>(false);
   const router = useRouter();
 
-  const [createUser, { loading, error }] = useMutation(CREATE_USER);
+  const [createUser, { loading }] = useMutation(CREATE_USER);
   const { user, signInWithGoogle, logout } = useGoogleAuth();
 
   useEffect(() => {
     if (user) {
       handleGoogleSignUp();
-        
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function SignUpPage() {
     }
   }, [router]);
 
-  const handleSignUp = async (e) => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -57,13 +57,17 @@ export default function SignUpPage() {
       toast.success("Sign-up successful!");
       Cookies.set("token", data.createUser.token, { expires: 7 });
       router.push("/");
-    } catch (err) {
-      toast.error(`Sign-up failed: ${err.message}`);
+    } catch  {
+      toast.error("Sign-up failed");
     }
   };
 
-  const handleGoogleSignUp = async () => {
+  const handleGoogleSignUp = async (): Promise<void> => {
     if (!user) return;
+    if (!user.email) {
+    toast.error("Google Sign-up failed: Email not provided");
+    return;
+  }
 
     try {
       const { data } = await createUser({
@@ -79,9 +83,9 @@ export default function SignUpPage() {
       toast.success("Google Sign-up successful!");
       Cookies.set("token", data.createUser.token, { expires: 7 });
       router.push("/");
-    } catch (err) {
-          logout();
-      toast.error(`Google Sign-up failed: ${err.message}`);
+    } catch  {
+      logout();
+      toast.error("Google Sign-up failed");
     }
   };
 
@@ -141,12 +145,11 @@ export default function SignUpPage() {
             {loading ? "Signing up..." : "Sign up"}
           </button>
         </form>
-           <div className="text-right mt-4">
-              <Link href="/sign_in" className="text-blue-500 hover:underline    text-sm">
-                          Log in
-               </Link>
-           </div>
-
+        <div className="text-right mt-4">
+          <Link href="/sign_in" className="text-blue-500 hover:underline text-sm">
+            Log in
+          </Link>
+        </div>
 
         <div className="flex items-center my-4">
           <div className="flex-1 border-t border-gray-600"></div>

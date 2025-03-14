@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
 import { GET_MESSAGES } from "../../../graphql/queries/messages";
 import { useChatStore } from "../../../hook/useChatStore";
+
 import UsingReactMarkdown from "../../components/reactmarkdown";
 
 const QAPage: React.FC = () => {
@@ -18,11 +19,21 @@ const QAPage: React.FC = () => {
     skip: !chatId,
   });
 
+
   const messages = getMessages(chatId);
+
+  type Message = {
+  id: string;
+  content: string;
+  childMessages: Array<{  
+    id: string;
+    content: string;
+  }>;
+};
 
   useEffect(() => {
     if (data?.messages) {
-      data.messages.forEach((msg: any) => addMessage(chatId, msg));
+      data.messages.forEach((msg:Message) => addMessage(chatId, msg));
     }
   }, [data, addMessage, chatId]);
 

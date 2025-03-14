@@ -1,19 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { RESET_PASSWORD } from "../../graphql/queries/resetPassword";
 import { useSearchParams, useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify"; // Import for toast notifications
-import "react-toastify/dist/ReactToastify.css"; // Import CSS for Toast notifications
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
-
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const router = useRouter();
 
@@ -34,14 +32,14 @@ export default function ResetPasswordPage() {
       setSuccess(true);
       toast.success("Password reset successfully! Redirecting...");
       setTimeout(() => router.push("/sign_in"), 2000);
-    } catch (error) {
+    } catch {
       toast.error("Failed to reset password. Please try again.");
     }
   };
 
   return (
     <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-md">
-      <ToastContainer /> {/* Toast notifications container */}
+      <ToastContainer />
       <h1 className="text-3xl font-bold text-center text-blue-600">proxima</h1>
       <h2 className="mt-4 text-xl font-semibold text-center">Set New Password</h2>
       <p className="mt-2 text-center text-gray-400">Enter a new password for your account.</p>
@@ -72,5 +70,13 @@ export default function ResetPasswordPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="text-center p-8">Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }

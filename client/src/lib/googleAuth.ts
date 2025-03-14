@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GoogleAuthProvider, signInWithPopup, getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+  User,
+  UserCredential,
+} from "firebase/auth";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
@@ -14,54 +22,40 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-let app; // Declare app outside the function
- console.log(firebaseConfig);
-try {
- 
- app = initializeApp(firebaseConfig);
-} catch (e) {
- console.error("Firebase initialization error:", e);
- // Handle the error gracefully (e.g., display an error message to the user)
-}
-
+// Initialize Firebase safely
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 export function useGoogleAuth() {
-  const [user, setUser] = useState(null);
-
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
+    const unsubscribe = onAuthStateChanged(auth, setUser);
     return () => unsubscribe();
   }, []);
 
-
-
-
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (): Promise<{ user: User; idToken: string } | null> => {
     try {
-      const result = await signInWithPopup(auth, provider);
-      console.log("User Info:", result.user);
+      const result: UserCredential = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
+      setUser(result.user); // Ensure `user` updates immediately
+      return { user: result.user, idToken };
     } catch (error) {
       console.error("Google Sign-in Error:", error);
+      return null;
     }
   };
 
-  
-
-
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       await signOut(auth);
+      setUser(null);
       console.log("User logged out");
     } catch (error) {
       console.error("Logout Error:", error);
     }
   };
 
-  
   return { user, signInWithGoogle, logout };
 }

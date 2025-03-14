@@ -15,7 +15,7 @@ const httpLink = new HttpLink({
 // WebSocket link for Subscriptions
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000/graphql", // WebSocket API
+    url: process.env.NEXT_PUBLIC_WS_URL || " ",
     connectionParams: {
       headers: {
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`, // Optional: Auth header
