@@ -1,26 +1,22 @@
-# Use the official Node.js image.
-FROM node:19.7.0
+FROM node:20
 
-# Set the working directory.
+# Set working directory to the repo root
 WORKDIR /usr/src/app
 
-# Copy package.json and yarn.lock first for better caching.
-COPY package.json ../../yarn.lock ./
+# Copy the repo-level package.json and yarn.lock (for workspaces)
+COPY package.json yarn.lock ./
 
-# Install dependencies.
-RUN yarn install 
+# Install all dependencies (including those for the API)
+RUN yarn install
 
-# Copy the rest of the application files.
+# Copy the entire repository into the image
 COPY . .
 
-# Set environment variable
-ENV NODE_ENV=production
+# Run Prisma generate and explicitly point to the schema location
+RUN npx prisma generate --schema=./api/prisma/schema.prisma
 
-# Generate Prisma client
-RUN npx prisma generate
+# Expose the port
+EXPOSE 5000
 
-# Expose the port the app runs on.
-EXPOSE 3000
-
-# Start the application.
+# Start the application
 CMD ["yarn", "start"]

@@ -41,7 +41,7 @@ async function startServer() {
   await server.start();
   server.applyMiddleware({ app });
 
-  const PORT = process.env.PORT || 4000;
+  const PORT = process.env.PORT || 5000;
   httpServer.listen(PORT, () => {
     console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
     console.log(`📡 Subscriptions ready at ws://localhost:${PORT}${server.graphqlPath}`);
