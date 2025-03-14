@@ -56,6 +56,8 @@ export default function SignUpPage() {
 
       toast.success("Sign-up successful!");
       Cookies.set("token", data.createUser.token, { expires: 7 });
+      Cookies.set("userId", data.createUser.id, { expires: 7 });
+     
       router.push("/");
     } catch  {
       toast.error("Sign-up failed");
@@ -82,6 +84,8 @@ export default function SignUpPage() {
 
       toast.success("Google Sign-up successful!");
       Cookies.set("token", data.createUser.token, { expires: 7 });
+      Cookies.set("userId", data.createUser.id, { expires: 7 });
+      
       router.push("/");
     } catch  {
       logout();

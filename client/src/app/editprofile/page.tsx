@@ -7,9 +7,11 @@ import Link from "next/link";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER } from "../../graphql/queries/user";
 import { UPDATE_USER } from "../../graphql/queries/updateUser";
+import Cookies from "js-cookie";
 
 const EditProfilePage = () => {
-  const userId = "cm88ta8po0001mk1b1w4ro48u"; 
+  const userId =Cookies.get("userId"); 
+  
   const { data, loading, error } = useQuery(GET_USER, { variables: { userId } });
   const [updateUser] = useMutation(UPDATE_USER);
 

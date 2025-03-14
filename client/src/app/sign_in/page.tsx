@@ -36,6 +36,8 @@ export default function LoginPage() {
       }
 
       Cookies.set("token", data.loginUser.token, { expires: 7, secure: true });
+      Cookies.set("userId", data.loginUser.user.id, { expires: 7 });
+    
       toast.success("Google login successful!");
       router.push("/");
     } catch (error) {
@@ -60,8 +62,11 @@ export default function LoginPage() {
   const handleLogin = async () => {
     try {
       const { data } = await loginUser({ variables: { email, password } });
+
       if (data?.loginUser?.token) {
         Cookies.set("token", data.loginUser.token, { expires: 7, secure: true });
+        Cookies.set("userId", data.loginUser.user.id, { expires: 7 });
+        
         toast.success("Login successful!");
         router.push("/");
       } else {

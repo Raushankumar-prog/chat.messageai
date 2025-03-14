@@ -5,8 +5,9 @@ import { GET_USER } from "../../graphql/queries/user";
 import Image from "next/image";
 import { IoWalletSharp, IoCardSharp, IoPersonSharp } from "react-icons/io5";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
-const userId = "cm88ta8po0001mk1b1w4ro48u";
+const userId = Cookies.get("userId");
 
 const AccountPage = () => {
   const { data, loading, error } = useQuery(GET_USER, {

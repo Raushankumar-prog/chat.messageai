@@ -3,8 +3,9 @@ import { GET_USER } from "../../graphql/queries/user";
 import Image from "next/image";
 import Link from "next/link";
 import { IoSettingsSharp } from "react-icons/io5"; 
+import Cookies from "js-cookie";
 
-const userId = "cm88ta8po0001mk1b1w4ro48u"; 
+const userId =Cookies.get("userId");
 
 
 interface SidebarFooterProps {

@@ -11,6 +11,7 @@ import { CREATETITLE } from "../../graphql/queries/createChat";
 import { v4 as uuidv4 } from "uuid";
 import client from "@lib/axiosInstance";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import Cookies from "js-cookie";
 
 export default function ChatInput() {
   const [input, setInput] = useState("");
@@ -93,9 +94,9 @@ export default function ChatInput() {
         console.error("Error: AI did not return a valid 3-4 word title");
         return;
       }
-
+         
       const { data: chatData } = await createTitle({
-        variables: { title, userId: "cm88ta8po0001mk1b1w4ro48u" },
+        variables: { title, userId:Cookies.get("userId") },
       });
 
       const newChatId = chatData?.createChat?.id;
