@@ -1,24 +1,19 @@
 FROM node:20
 
-# Set working directory
+# Set working directory at the repo root
 WORKDIR /usr/src/app
 
-# Copy the API package.json and the root yarn.lock into the container
+# Copy the root-level yarn.lock and the API package.json
 COPY api/package.json yarn.lock ./
 
 # Install dependencies
 RUN yarn install
 
-# Copy all the files from the API folder into the container
-COPY api/ .
+# Copy the entire API folder preserving its structure
+COPY api/ ./api/
 
-# Generate the Prisma client (assuming schema.prisma is now at /usr/src/app)
+# Run Prisma generate with the correct schema path
 RUN npx prisma generate --schema=./api/prisma/schema.prisma
 
-# Expose the port the app listens on
-EXPOSE 5000
-
-# Start the application
+EXPOSE 3000
 CMD ["yarn", "start"]
-
-
