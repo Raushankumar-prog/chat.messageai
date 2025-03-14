@@ -7,7 +7,8 @@ WORKDIR /usr/src/app
 COPY api/package.json yarn.lock ./
 
 # Install dependencies
-RUN yarn install
+
+RUN yarn install --production=false
 
 # Copy the entire API folder, preserving its structure
 COPY api/ ./api/
