@@ -7,16 +7,33 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
- // const [name, setName] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedName = Cookies.get("token");
+    // First check for invalid cookie state
+    if (typeof window !== "undefined" && Cookies.get("token") && !Cookies.get("userId")) {
+      // Clear cookies properly
+      const cookies = document.cookie.split(";");
+      cookies.forEach(cookie => {
+        const [name] = cookie.trim().split("=");
+        if (name) {
+          Cookies.remove(name, {
+            path: "/",
+            domain: window.location.hostname,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict"
+          });
+        }
+      });
+      router.replace("/sign_up");
+      return;
+    }
 
+    // Then check authentication status
+    const storedName = Cookies.get("token");
     if (!storedName) {
-      router.replace("/sign_up"); 
+      router.replace("/sign_up");
     } else {
-     // setName(storedName);
-      setLoading(false); 
+      setLoading(false);
     }
   }, [router]);
 

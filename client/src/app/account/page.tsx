@@ -7,9 +7,11 @@ import { IoWalletSharp, IoCardSharp, IoPersonSharp } from "react-icons/io5";
 import Link from "next/link";
 import Cookies from "js-cookie";
 
-const userId = Cookies.get("userId");
+
 
 const AccountPage = () => {
+  
+  const userId = Cookies.get("userId");
   const { data, loading, error } = useQuery(GET_USER, {
     variables: { userId },
   });

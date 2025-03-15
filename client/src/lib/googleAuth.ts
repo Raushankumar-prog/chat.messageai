@@ -35,6 +35,8 @@ export function useGoogleAuth() {
     return () => unsubscribe();
   }, []);
 
+  
+
   const signInWithGoogle = async (): Promise<{ user: User; idToken: string } | null> => {
     try {
       const result: UserCredential = await signInWithPopup(auth, provider);
