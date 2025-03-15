@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 
+
 export default function SignUpPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -30,7 +31,9 @@ export default function SignUpPage() {
 
   useEffect(() => {
     const token = Cookies.get("token");
-    if (token) {
+    const userId = Cookies.get("userId");
+    
+    if (token && userId) {
       router.push("/");
     }
   }, [router]);
