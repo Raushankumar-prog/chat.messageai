@@ -43,8 +43,8 @@ export function useGoogleAuth() {
       const idToken = await result.user.getIdToken();
       setUser(result.user); // Ensure `user` updates immediately
       return { user: result.user, idToken };
-    } catch (error) {
-      console.error("Google Sign-in Error:", error);
+    } catch  {
+      //console.error("Google Sign-in Error:", error);
       return null;
     }
   };

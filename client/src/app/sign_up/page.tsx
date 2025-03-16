@@ -29,6 +29,8 @@ export default function SignUpPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
+
+  
   useEffect(() => {
     const token = Cookies.get("token");
     const userId = Cookies.get("userId");
@@ -37,6 +39,9 @@ export default function SignUpPage() {
       router.push("/");
     }
   }, [router]);
+
+
+
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -63,9 +68,16 @@ export default function SignUpPage() {
      
       router.push("/");
     } catch  {
+      Cookies.remove("userId");
+    Cookies.remove("token");
+    logout();
+
       toast.error("Sign-up failed");
     }
   };
+
+
+  
 
   const handleGoogleSignUp = async (): Promise<void> => {
     if (!user) return;
@@ -91,7 +103,9 @@ export default function SignUpPage() {
       
       router.push("/");
     } catch  {
-      logout();
+      Cookies.remove("userId");
+    Cookies.remove("token");
+    logout();
       toast.error("Google Sign-up failed");
     }
   };

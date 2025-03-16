@@ -21,8 +21,9 @@ export default function LoginPage() {
   const handleGoogleLogin = useCallback(async () => {
     try {
       const result = await signInWithGoogle();
+       
       if (!result?.idToken) {
-        toast.error("Google login failed.");
+     
         return;
       }
 
@@ -31,7 +32,7 @@ export default function LoginPage() {
       });
 
       if (!data?.loginUser?.token) {
-        toast.error("Google login failed.");
+        toast.error("Google login failed. 102");
         return;
       }
 
@@ -41,9 +42,11 @@ export default function LoginPage() {
       toast.success("Google login successful!");
       router.push("/");
     } catch (error) {
-      logout();
+      Cookies.remove("userId");
+    Cookies.remove("token");
+    logout();
       console.error("Google Sign-in error:", error);
-      let errorMessage = "Sign-in failed.";
+      let errorMessage = "Sign-in failed. 103";
       if (error instanceof Error) {
         errorMessage = error.message;
       }
@@ -51,6 +54,7 @@ export default function LoginPage() {
     }
   }, [signInWithGoogle, loginUser, router, logout]);
 
+  
   useEffect(() => {
     if (user) handleGoogleLogin();
   }, [user, handleGoogleLogin]); // Added handleGoogleLogin to dependencies
@@ -70,6 +74,10 @@ export default function LoginPage() {
         toast.success("Login successful!");
         router.push("/");
       } else {
+        Cookies.remove("userId");
+       Cookies.remove("token");
+         logout();
+
         toast.error("Invalid credentials.");
       }
     } catch (error) {
