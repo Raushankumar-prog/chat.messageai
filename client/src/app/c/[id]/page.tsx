@@ -65,10 +65,12 @@ const QAPage: React.FC = () => {
           {/* Answer Section */}
           <div className="p-6">
             <div className="mb-6 flex">
-              <span className="relative text-yellow-400 text-4xl py-2">
-                <span className="absolute -top-2 -left-2 text-white opacity-80 animate-ping">✨</span>
+              <span className={`relative text-yellow-400  py-2 ${
+                isMobile ? "text-2xl" : "text-4xl"
+              }`}>
+              
                 <span className="animate-bounce">🌟</span>
-                <span className="absolute -bottom-2 -right-2 text-white opacity-80 animate-ping">✨</span>
+              
               </span>
 
               {/* Render Markdown using UsingReactMarkdown */}
