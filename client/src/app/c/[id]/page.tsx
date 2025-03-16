@@ -48,7 +48,7 @@ const QAPage: React.FC = () => {
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
-    <div className={`min-h-screen bg-gray-900 text-gray-200  py-12 flex flex-col items-start ${isMobile ? "px-1" :"px-6"}`}>
+    <div className={`min-h-screen bg-gray-900 text-gray-200  py-12 flex flex-col items-start ${isMobile ? "px-0" :"px-6"}`}>
       {messages.map((message, index) => (
         <div
           key={message.id}

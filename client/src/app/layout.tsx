@@ -8,6 +8,7 @@ import Sidebar from "./components/Sidebar";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import ChatInput from "./components/ChatInput";
 import Providers from "@components/Providers";
+import { useChatStore } from "../hook/useChatStore";
 
 
 export default function RootLayout({
@@ -16,6 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const isMobile=useChatStore();
+
   const authRoutes = [
     "/sign_in",
     "/sign_up",
@@ -46,7 +49,7 @@ export default function RootLayout({
             <div className="flex-1 flex flex-col bg-gray-900 text-gray-100">
               <Header />
               <ScrollArea.Root className="flex-1 overflow-hidden">
-                <ScrollArea.Viewport className="h-full p-6">
+                <ScrollArea.Viewport className={`h-full ${isMobile ? "p-1" : "p-6"}`}>
                   {children}
                 </ScrollArea.Viewport>
                 <ScrollArea.Scrollbar
