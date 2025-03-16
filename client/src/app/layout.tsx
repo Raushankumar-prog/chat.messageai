@@ -1,3 +1,4 @@
+// RootLayout.tsx
 "use client";
 
 import { usePathname } from "next/navigation";
@@ -15,14 +16,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const authRoutes = [
+    "/sign_in",
+    "/sign_up",
+    "/editprofile",
+    "/account",
+    "/settings",
+    "/payment",
+    "/reset_password",
+    "/forget_password"
+  ];
 
-  if (pathname === "/sign_in"  || pathname === "/sign_up"   || pathname === "/editprofile"  || pathname === "/account" || pathname === "/settings" || pathname === "/payment" || pathname === "/reset_password" || pathname==="/forget_password") {
+  if (authRoutes.includes(pathname)) {
     return (
       <html lang="en" className="font-serif">
-        
         <body className="font-serif antialiased bg-gray-900 text-gray-300 h-screen flex items-center justify-center">
-            <Providers>{children}</Providers> 
-           {/* Render the sign-in page */}
+          <Providers>{children}</Providers>
         </body>
       </html>
     );
@@ -33,24 +42,9 @@ export default function RootLayout({
       <body className="font-serif antialiased bg-gray-900 text-gray-300 h-screen">
         <Providers>
           <div className="flex h-full">
-            {/* Sidebar */}
-            <ScrollArea.Root className="h-full bg-gray-800">
-              <ScrollArea.Viewport className="h-full">
-                <Sidebar />
-              </ScrollArea.Viewport>
-              <ScrollArea.Scrollbar
-                orientation="vertical"
-                className="flex w-2 bg-gray-700 hover:bg-gray-600 transition-colors"
-              >
-                <ScrollArea.Thumb className="bg-gray-500 rounded-full" />
-              </ScrollArea.Scrollbar>
-            </ScrollArea.Root>
-
-            {/* Main Content */}
+            <Sidebar />
             <div className="flex-1 flex flex-col bg-gray-900 text-gray-100">
-              {/* Header */}
               <Header />
-              {/* Scrollable Content */}
               <ScrollArea.Root className="flex-1 overflow-hidden">
                 <ScrollArea.Viewport className="h-full p-6">
                   {children}
@@ -70,4 +64,3 @@ export default function RootLayout({
     </html>
   );
 }
-

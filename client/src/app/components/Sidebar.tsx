@@ -1,3 +1,4 @@
+// Sidebar.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -19,42 +20,47 @@ type GetChatsResponse = {
 };
 
 export default function Sidebar() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { isSidebarOpen, isMobile, toggleSidebar } = useChatStore();
   const [isExpanded, setIsExpanded] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) {
-        setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const { addChat, chats, updateChats } = useChatStore();
+  const { chats, updateChats } = useChatStore();
 
   const { data, loading, error } = useQuery<GetChatsResponse>(GET_CHATS, {
-    variables: { userId: Cookies.get("userId")},
+    variables: { userId: Cookies.get("userId") },
   });
 
   useEffect(() => {
     if (data?.chats) {
       updateChats(data.chats);
     }
-  }, [data, updateChats, addChat]);
+  }, [data, updateChats]);
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 640;
+      useChatStore.getState().setIsMobile(mobile);
+      useChatStore.setState({ isSidebarOpen: !mobile });
+    };
+    
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const toggleShowMore = () => setIsExpanded(!isExpanded);
+
+  if (isMobile && !isSidebarOpen) return null; // Completely remove sidebar from DOM on mobile
 
   return (
     <div
-      className={`${
-        isSidebarOpen ? "w-72" : "w-16"
-      } h-screen bg-gray-800 text-gray-300 flex flex-col justify-between p-4 shadow-lg transition-all duration-300`}
+      className={`sm:relative h-screen bg-gray-800 text-gray-300 flex flex-col justify-between p-4 shadow-lg transition-all duration-300 ${
+       isMobile
+  ? isSidebarOpen
+    ? "translate-x-0 w-64"
+    : "-translate-x-full w-0"
+  : isSidebarOpen
+    ? "translate-x-0 w-full sm:w-72"
+    : "translate-x-full sm:translate-x-0 sm:w-16"
+      }`}
     >
       <div className="mb-4">
         <button
@@ -90,7 +96,11 @@ export default function Sidebar() {
                 stroke="currentColor"
                 strokeWidth={2}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               New Chat
             </button>
@@ -99,7 +109,7 @@ export default function Sidebar() {
       )}
 
       <ScrollArea.Root className="flex-1 overflow-hidden rounded-lg">
-        <ScrollArea.Viewport className="w-full h-full">
+       <ScrollArea.Viewport className="w-full h-full">
           <div className="pr-2">
             {isSidebarOpen && <h3 className="text-sm tracking-wide text-sky-200 mb-2">Recent</h3>}
             <ul>

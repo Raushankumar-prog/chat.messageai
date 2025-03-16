@@ -11,7 +11,7 @@ import UsingReactMarkdown from "../../components/reactmarkdown";
 const QAPage: React.FC = () => {
   const params = useParams();
   const chatId = params?.id as string;
-  const { addMessage, getMessages, shouldScroll, setShouldScroll } = useChatStore();
+  const { addMessage, getMessages, shouldScroll, setShouldScroll ,isMobile} = useChatStore();
   const latestMessageRef = useRef<HTMLDivElement>(null);
 
   const { data, loading, error } = useQuery(GET_MESSAGES, {
@@ -48,7 +48,7 @@ const QAPage: React.FC = () => {
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200 px-6 py-12 flex flex-col items-start">
+    <div className={`min-h-screen bg-gray-900 text-gray-200  py-12 flex flex-col items-start ${isMobile ? "px-1" :"px-6"}`}>
       {messages.map((message, index) => (
         <div
           key={message.id}

@@ -17,6 +17,9 @@ type Message = {
 type ChatStore = {
   messagesByChatId: Record<string, Record<string, Message>>;
   chats: Chat[];
+  isSidebarOpen: boolean;
+  isMobile: boolean;
+  selectedOption: string;
   addMessage: (chatId: string, message: Message) => void;
   updateMessage: (chatId: string, messageId: string, updates: Partial<Message>) => Promise<void>;
   getMessages: (chatId: string) => Message[];
@@ -24,11 +27,18 @@ type ChatStore = {
   setShouldScroll: (shouldScroll: boolean) => void;
   addChat: (chat: Chat) => void;
   updateChats: (chats: Chat[]) => void;
+  toggleSidebar: () => void;
+  setIsMobile: (isMobile: boolean) => void;
+  setSelectedOption: (option: string) => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
   messagesByChatId: {},
   chats: [],
+  isSidebarOpen: true,
+  isMobile: false,
+  selectedOption: "Gemini-1.5-pro",
+  shouldScroll: true,
 
   addMessage: (chatId, message) => {
     set((state) => ({
@@ -58,8 +68,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           },
         };
       });
-
-      resolve(); // Ensure Promise resolves
+      resolve();
     });
   },
 
@@ -68,18 +77,10 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     return Object.values(messagesById);
   },
 
-  shouldScroll: true,
-  setShouldScroll: (shouldScroll) => {
-    set({ shouldScroll });
-  },
-
-  addChat: (chat) => {
-    set((state) => ({
-      chats: [chat, ...state.chats],
-    }));
-  },
-
-  updateChats: (chats) => {
-    set({ chats });
-  },
+  setShouldScroll: (shouldScroll) => set({ shouldScroll }),
+  addChat: (chat) => set((state) => ({ chats: [chat, ...state.chats] })),
+  updateChats: (chats) => set({ chats }),
+  toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
+  setIsMobile: (isMobile) => set({ isMobile }),
+  setSelectedOption: (option) => set({ selectedOption: option }),
 }));

@@ -17,7 +17,7 @@ export default function ChatInput() {
   const [input, setInput] = useState("");
   const pathname = usePathname();
   const router = useRouter();
-  const { addChat, addMessage, setShouldScroll, updateMessage } = useChatStore();
+  const { addChat, addMessage, setShouldScroll, updateMessage,isMobile } = useChatStore();
   const [askAI] = useMutation(ASK_AI);
   const [saveAns] = useMutation(SAVE_ANS);
   const [createTitle] = useMutation(CREATETITLE);
@@ -125,8 +125,17 @@ export default function ChatInput() {
   }, [chatId]);
 
   return (
-    <div className="fixed bottom-6 left-[33%] right-1 flex items-center gap-3">
-      <div className="relative flex items-center w-[70%] bg-gradient-to-br from-gray-900 via-gray-950 to-black bg-opacity-60 backdrop-blur-2xl text-white rounded-full px-8 py-4 shadow-[0px_0px_20px_rgba(0,0,255,0.3)] border border-gray-700 focus-within:border-blue-600 transition-all duration-500 hover:shadow-blue-600/50 hover:scale-105">
+ <div
+  className={`fixed bottom-6 flex items-center gap-3 ${
+    isMobile ? "left-20 right-6" : "left-[33%] right-0"
+  }`}
+>
+
+
+      <div className={`relative flex items-center  bg-gradient-to-br from-gray-900 via-gray-950 to-black bg-opacity-60 backdrop-blur-2xl text-white rounded-full px-8 py-4 shadow-[0px_0px_20px_rgba(0,0,255,0.3)] border border-gray-700 focus-within:border-blue-600 transition-all duration-500 hover:shadow-blue-600/50 hover:scale-105 
+        ${
+            isMobile ? " w-[100%] " : "w-[70%]"
+  }`}>
         <FaMicrophone className="text-gray-400 cursor-pointer hover:text-blue-400 transition duration-200 mr-4 text-2xl hover:scale-110 active:scale-95 animate-pulse" />
         <ScrollArea className="w-full h-auto max-h-24 overflow-hidden">
           <textarea
