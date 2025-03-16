@@ -46,21 +46,26 @@ const Code = ({ inline, className, children, ...props }: CodeProps) => {
   const isMultiline = String(children).includes("\n");
   if (isMultiline) {
     return (
-      <div className="relative group my-4">
-        <div className="absolute top-2 right-2 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <span className="text-xs text-gray-400 uppercase">{language}</span>
-          <button
-            onClick={copyToClipboard}
-            className="text-gray-400 hover:text-gray-200 transition-colors"
-            aria-label={isCopied ? "Copied!" : "Copy to clipboard"}
-          >
-            {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          </button>
-        </div>
-        <pre className="overflow-x-auto p-4 rounded-lg bg-gray-950 border border-gray-700 shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <code className={className} {...props}>{children}</code>
-        </pre>
-      </div>
+     <div className="relative group my-4 w-full max-w-[66vw]">
+  <div className="absolute top-2 right-6 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+    <span className="text-xs text-gray-400 uppercase">{language}</span>
+    <button
+      onClick={copyToClipboard}
+      className="text-gray-400 hover:text-gray-200 transition-colors"
+      aria-label={isCopied ? "Copied!" : "Copy to clipboard"}
+    >
+      {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+    </button>
+  </div>
+  <pre className="overflow-x-auto p-4 rounded-lg bg-gray-950 border border-gray-700 shadow-lg hover:shadow-xl transition-shadow duration-300 w-full">
+    <code 
+      className={`${className} block whitespace-pre min-w-fit`} 
+      {...props}
+    >
+      {children}
+    </code>
+  </pre>
+</div>
     );
   }
 
