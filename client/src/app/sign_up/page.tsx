@@ -53,7 +53,7 @@ export default function SignUpPage() {
           name: email.split("@")[0],
           password,
           googleId: null,
-          avatar: "",
+          avatar: "https://lh3.googleusercontent.com/a/ACg8ocKnjJmU3CQhQGy2h0tBgXB2E_dI4UUxEIbI0oQrCE53ptcGRI-O=s360-c-no",
         },
       });
 
