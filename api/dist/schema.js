@@ -22,7 +22,7 @@ async function* generateGreetings() {
 async function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-//this is function for generation of text response based on  the gemini model
+// Function for generating text responses based on the Gemini model
 export async function* aiResponseSubscription(_, args) {
     try {
         const { message, chatId } = args;
@@ -50,7 +50,12 @@ export async function* aiResponseSubscription(_, args) {
         }
     }
     catch (error) {
-        throw new Error(`Subscription error: ${error.message}`);
+        if (error instanceof Error) {
+            throw new Error(`Subscription error: ${error.message}`);
+        }
+        else {
+            throw new Error("An unknown error occurred in aiResponseSubscription.");
+        }
     }
 }
 export const schema = new GraphQLSchema({

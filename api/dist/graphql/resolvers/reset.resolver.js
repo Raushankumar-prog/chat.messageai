@@ -37,7 +37,7 @@ export const resetresolvers = {
         },
         resetPassword: async (_, { email, newPassword }) => {
             const hashedPassword = await bcrypt.hash(newPassword, 10);
-            await prisma.User.update({
+            await prisma.user.update({
                 where: { email },
                 data: { password: hashedPassword },
             });

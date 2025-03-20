@@ -8,7 +8,16 @@ import cors from 'cors';
 
 // Initialize Express
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'https://chat-messageai-client.vercel.app',
+  ],
+  credentials: true,
+  exposedHeaders: ['Authorization'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+};
+
+app.use(cors(corsOptions));
 
 // Create HTTP Server
 const httpServer = http.createServer(app);

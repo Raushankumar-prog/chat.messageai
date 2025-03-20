@@ -62,28 +62,37 @@ export default function LoginPage() {
     if (getLocalStorage("token")) router.push("/");
   }, [router]);
 
-  const handleLogin = async () => {
-    try {
-      const { data } = await loginUser({ variables: { email, password } });
+const handleLogin = async () => {
+  try {
+    const { data } = await loginUser({ variables: { email, password } });
 
-      if (data?.loginUser?.token) {
-        setLocalStorage("token", data.loginUser.token);
-        setLocalStorage("userId", data.loginUser.user.id);
-        
-        toast.success("Login successful!");
-        router.push("/");
-      } else {
-        removeLocalStorage("userId");
-        removeLocalStorage("token");
-        logout();
+    if (data?.loginUser?.token) {
+      setLocalStorage("token", data.loginUser.token);
+      setLocalStorage("userId", data.loginUser.user.id);
+      
+      toast.success("Login successful!");
+      router.push("/");
+    } 
+  } catch (error: unknown) {
+    // Clear credentials first
+    removeLocalStorage("userId");
+    removeLocalStorage("token");
+    logout();
 
-        toast.error("Invalid credentials.");
-      }
-    } catch (error) {
-      console.error("Login Error:", error);
-      toast.error("Login failed.");
+    // Handle error properly
+    let errorMessage = "Login failed.";
+    
+    if (error instanceof Error) {
+      errorMessage += ` Reason: ${error.message}`;
+      console.error("Login Error Details:", error);
     }
-  };
+
+    // Show detailed error to user
+    toast.error(errorMessage);
+
+
+  }
+};
   
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
