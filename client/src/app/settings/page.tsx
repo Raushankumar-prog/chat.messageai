@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { IoLockClosedSharp, IoNotificationsSharp, IoPersonSharp, IoLogOut } from "react-icons/io5";
-import Cookies from "js-cookie";
 import { useGoogleAuth } from "@lib/googleAuth";
 
 const SettingsPage = () => {
@@ -11,14 +10,9 @@ const SettingsPage = () => {
   const {logout} =useGoogleAuth();
 
   const handleLogout = () => {
-    // Clear all cookies
-    // document.cookie.split(";").forEach((cookie) => {
-    //   document.cookie = cookie
-    //     .replace(/^ +/, "")
-    //     .replace(/=.*/, "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/");
-    // });
-    Cookies.remove("userId");
-    Cookies.remove("token");
+    
+        localStorage.removeItem("userId");
+        localStorage.removeItem("token");
     logout();
 
     // Redirect to login or home page

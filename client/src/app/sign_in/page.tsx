@@ -6,7 +6,6 @@ import { useGoogleAuth } from "@lib/googleAuth";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
 import { login } from "../../graphql/queries/login";
-import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
@@ -23,7 +22,6 @@ export default function LoginPage() {
       const result = await signInWithGoogle();
        
       if (!result?.idToken) {
-     
         return;
       }
 
@@ -36,15 +34,15 @@ export default function LoginPage() {
         return;
       }
 
-      Cookies.set("token", data.loginUser.token, { expires: 7, secure: true });
-      Cookies.set("userId", data.loginUser.user.id, { expires: 7 });
+      localStorage.setItem("token", data.loginUser.token);
+      localStorage.setItem("userId", data.loginUser.user.id);
     
       toast.success("Google login successful!");
       router.push("/");
     } catch (error) {
-      Cookies.remove("userId");
-    Cookies.remove("token");
-    logout();
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
+      logout();
       console.error("Google Sign-in error:", error);
       let errorMessage = "Sign-in failed. 103";
       if (error instanceof Error) {
@@ -57,10 +55,10 @@ export default function LoginPage() {
   
   useEffect(() => {
     if (user) handleGoogleLogin();
-  }, [user, handleGoogleLogin]); // Added handleGoogleLogin to dependencies
+  }, [user, handleGoogleLogin]);
 
   useEffect(() => {
-    if (Cookies.get("token")) router.push("/");
+    if (localStorage.getItem("token")) router.push("/");
   }, [router]);
 
   const handleLogin = async () => {
@@ -68,15 +66,15 @@ export default function LoginPage() {
       const { data } = await loginUser({ variables: { email, password } });
 
       if (data?.loginUser?.token) {
-        Cookies.set("token", data.loginUser.token, { expires: 7, secure: true });
-        Cookies.set("userId", data.loginUser.user.id, { expires: 7 });
+        localStorage.setItem("token", data.loginUser.token);
+        localStorage.setItem("userId", data.loginUser.user.id);
         
         toast.success("Login successful!");
         router.push("/");
       } else {
-        Cookies.remove("userId");
-       Cookies.remove("token");
-         logout();
+        localStorage.removeItem("userId");
+        localStorage.removeItem("token");
+        logout();
 
         toast.error("Invalid credentials.");
       }

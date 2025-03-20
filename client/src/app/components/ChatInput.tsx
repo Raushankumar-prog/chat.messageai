@@ -11,7 +11,7 @@ import { CREATETITLE } from "../../graphql/queries/createChat";
 import { v4 as uuidv4 } from "uuid";
 import client from "@lib/axiosInstance";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import Cookies from "js-cookie";
+
 
 export default function ChatInput() {
   const [input, setInput] = useState("");
@@ -96,7 +96,7 @@ export default function ChatInput() {
       }
          
       const { data: chatData } = await createTitle({
-        variables: { title, userId:Cookies.get("userId") },
+        variables: { title, userId:localStorage.getItem("userId") },
       });
 
       const newChatId = chatData?.createChat?.id;

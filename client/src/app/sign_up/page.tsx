@@ -6,11 +6,9 @@ import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { CREATE_USER } from "../../graphql/queries/signup";
 import { useGoogleAuth } from "@lib/googleAuth";
-import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
-
 
 export default function SignUpPage() {
   const [email, setEmail] = useState<string>("");
@@ -29,19 +27,14 @@ export default function SignUpPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-
-  
   useEffect(() => {
-    const token = Cookies.get("token");
-    const userId = Cookies.get("userId");
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     
     if (token && userId) {
       router.push("/");
     }
   }, [router]);
-
-
-
 
   const handleSignUp = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -63,28 +56,25 @@ export default function SignUpPage() {
       });
 
       toast.success("Sign-up successful!");
-      Cookies.set("token", data.createUser.token, { expires: 7 });
-      Cookies.set("userId", data.createUser.id, { expires: 7 });
+      localStorage.setItem("token", data.createUser.token);
+      localStorage.setItem("userId", data.createUser.id);
      
       router.push("/");
-    } catch  {
-      Cookies.remove("userId");
-    Cookies.remove("token");
-    logout();
+    } catch {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
+      logout();
 
       toast.error("Sign-up failed");
     }
   };
 
-
-  
-
   const handleGoogleSignUp = async (): Promise<void> => {
     if (!user) return;
     if (!user.email) {
-    toast.error("Google Sign-up failed: Email not provided");
-    return;
-  }
+      toast.error("Google Sign-up failed: Email not provided");
+      return;
+    }
 
     try {
       const { data } = await createUser({
@@ -98,18 +88,19 @@ export default function SignUpPage() {
       });
 
       toast.success("Google Sign-up successful!");
-      Cookies.set("token", data.createUser.token, { expires: 7 });
-      Cookies.set("userId", data.createUser.id, { expires: 7 });
+      localStorage.setItem("token", data.createUser.token);
+      localStorage.setItem("userId", data.createUser.id);
       
       router.push("/");
-    } catch  {
-      Cookies.remove("userId");
-    Cookies.remove("token");
-    logout();
+    } catch {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("token");
+      logout();
       toast.error("Google Sign-up failed");
     }
   };
 
+  // The rest of the component remains exactly the same
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 p-4">
       <div className="w-full max-w-md rounded-lg bg-gray-800 p-6 shadow-lg">

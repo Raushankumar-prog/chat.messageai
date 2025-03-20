@@ -5,7 +5,6 @@ import { GET_USER } from "../../graphql/queries/user";
 import Image from "next/image";
 import Link from "next/link";
 import { IoSettingsSharp } from "react-icons/io5";
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
 interface SidebarFooterProps {
@@ -18,7 +17,7 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({ isSidebarOpen }) => {
 
   useEffect(() => {
     setMounted(true);
-    setUserId(Cookies.get("userId"));
+    setUserId(localStorage.getItem("userId") || undefined);
   }, []);
 
   const { data, loading, error } = useQuery(GET_USER, {
@@ -27,7 +26,6 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({ isSidebarOpen }) => {
   });
 
   if (!mounted) {
-    // Return server-side compatible fallback
     return (
       <div className="border-t border-gray-700 pt-4">
         <div className="mt-6 flex items-center space-x-3">
@@ -39,7 +37,6 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({ isSidebarOpen }) => {
 
   return (
     <div className="border-t border-gray-700 pt-4">
-      {/* User Profile Section */}
       <div className="mt-6 flex items-center space-x-3">
         <div className="relative w-8 h-8">
           <Link href="/editprofile">
@@ -69,7 +66,6 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({ isSidebarOpen }) => {
         )}
       </div>
 
-      {/* Account Settings */}
       <ul className={`${isSidebarOpen ? "space-y-4" : "space-y-2"} mt-4`}>
         <li className="flex items-center">
           <Link

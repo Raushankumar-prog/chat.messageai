@@ -5,13 +5,13 @@ import { GET_USER } from "../../graphql/queries/user";
 import Image from "next/image";
 import { IoWalletSharp, IoCardSharp, IoPersonSharp } from "react-icons/io5";
 import Link from "next/link";
-import Cookies from "js-cookie";
+
 
 
 
 const AccountPage = () => {
   
-  const userId = Cookies.get("userId");
+  const userId = localStorage.getItem("userId");
   const { data, loading, error } = useQuery(GET_USER, {
     variables: { userId },
   });

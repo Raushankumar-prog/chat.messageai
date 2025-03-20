@@ -41,7 +41,7 @@ export function useGoogleAuth() {
     try {
       const result: UserCredential = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
-      setUser(result.user); // Ensure `user` updates immediately
+      setUser(result.user);
       return { user: result.user, idToken };
     } catch  {
       //console.error("Google Sign-in Error:", error);

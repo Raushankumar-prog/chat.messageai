@@ -1,6 +1,5 @@
 "use client";
 
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -11,24 +10,14 @@ export default function Home() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const token = Cookies.get("token");
-    const userId = Cookies.get("userId");
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
-    // Check for invalid cookie state
+    // Check for invalid authentication state
     if (token && !userId) {
-      // Clear all cookies
-      const cookies = document.cookie.split(";");
-      cookies.forEach(cookie => {
-        const [name] = cookie.trim().split("=");
-        if (name) {
-          Cookies.remove(name, {
-            path: "/",
-            domain: window.location.hostname,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
-          });
-        }
-      });
+      // Clear all authentication-related storage
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
       router.replace("/sign_up");
       return;
     }
