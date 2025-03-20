@@ -1,5 +1,6 @@
 "use client";
 
+import { getLocalStorage, removeLocalStorage } from "@lib/storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -10,14 +11,14 @@ export default function Home() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+    const token = getLocalStorage("token");
+    const userId = getLocalStorage("userId");
 
     // Check for invalid authentication state
     if (token && !userId) {
       // Clear all authentication-related storage
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
+      removeLocalStorage("token");
+      removeLocalStorage("userId");
       router.replace("/sign_up");
       return;
     }

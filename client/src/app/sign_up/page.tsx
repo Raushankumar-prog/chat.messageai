@@ -9,6 +9,7 @@ import { useGoogleAuth } from "@lib/googleAuth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import { getLocalStorage, removeLocalStorage, setLocalStorage } from "@lib/storage";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState<string>("");
@@ -28,8 +29,8 @@ export default function SignUpPage() {
   }, [user]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+    const token = getLocalStorage("token");
+    const userId =getLocalStorage("userId");
     
     if (token && userId) {
       router.push("/");
@@ -56,13 +57,13 @@ export default function SignUpPage() {
       });
 
       toast.success("Sign-up successful!");
-      localStorage.setItem("token", data.createUser.token);
-      localStorage.setItem("userId", data.createUser.id);
+      setLocalStorage("token", data.createUser.token);
+      setLocalStorage("userId", data.createUser.id);
      
       router.push("/");
     } catch {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("token");
+      removeLocalStorage("userId");
+      removeLocalStorage("token");
       logout();
 
       toast.error("Sign-up failed");
@@ -88,13 +89,13 @@ export default function SignUpPage() {
       });
 
       toast.success("Google Sign-up successful!");
-      localStorage.setItem("token", data.createUser.token);
-      localStorage.setItem("userId", data.createUser.id);
+        setLocalStorage("token", data.createUser.token);
+        setLocalStorage("userId", data.createUser.id);
       
       router.push("/");
     } catch {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("token");
+      removeLocalStorage("userId");
+      removeLocalStorage("token");
       logout();
       toast.error("Google Sign-up failed");
     }

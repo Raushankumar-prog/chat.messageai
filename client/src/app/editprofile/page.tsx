@@ -7,9 +7,10 @@ import Link from "next/link";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER } from "../../graphql/queries/user";
 import { UPDATE_USER } from "../../graphql/queries/updateUser";
+import { getLocalStorage } from "@lib/storage";
 
 const EditProfilePage = () => {
-  const userId = localStorage.getItem("userId"); 
+  const userId = getLocalStorage("userId"); 
   
   
   const { data, loading, error } = useQuery(GET_USER, { variables: { userId } });

@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
+import { getLocalStorage } from "@lib/storage";
 
 interface SidebarFooterProps {
   isSidebarOpen: boolean;
@@ -17,7 +18,7 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({ isSidebarOpen }) => {
 
   useEffect(() => {
     setMounted(true);
-    setUserId(localStorage.getItem("userId") || undefined);
+    setUserId(getLocalStorage("userId") || undefined);
   }, []);
 
   const { data, loading, error } = useQuery(GET_USER, {

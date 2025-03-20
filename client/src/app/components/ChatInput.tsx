@@ -11,6 +11,7 @@ import { CREATETITLE } from "../../graphql/queries/createChat";
 import { v4 as uuidv4 } from "uuid";
 import client from "@lib/axiosInstance";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { getLocalStorage } from "@lib/storage";
 
 
 export default function ChatInput() {
@@ -96,7 +97,7 @@ export default function ChatInput() {
       }
          
       const { data: chatData } = await createTitle({
-        variables: { title, userId:localStorage.getItem("userId") },
+        variables: { title, userId:getLocalStorage("userId") },
       });
 
       const newChatId = chatData?.createChat?.id;

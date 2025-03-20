@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { IoLockClosedSharp, IoNotificationsSharp, IoPersonSharp, IoLogOut } from "react-icons/io5";
 import { useGoogleAuth } from "@lib/googleAuth";
+import { removeLocalStorage } from "@lib/storage";
 
 const SettingsPage = () => {
   const [notifications, setNotifications] = useState(true);
@@ -11,8 +12,8 @@ const SettingsPage = () => {
 
   const handleLogout = () => {
     
-        localStorage.removeItem("userId");
-        localStorage.removeItem("token");
+        removeLocalStorage("userId");
+        removeLocalStorage("token");
     logout();
 
     // Redirect to login or home page

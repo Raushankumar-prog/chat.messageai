@@ -8,6 +8,7 @@ import { GET_CHATS } from "../../graphql/queries/chats";
 import Link from "next/link";
 import SidebarFooter from "./SidebarFooter";
 import { useChatStore } from "../../hook/useChatStore";
+import { getLocalStorage } from "@lib/storage";
 
 type Chat = {
   id: string;
@@ -24,7 +25,7 @@ export default function Sidebar() {
   const { chats, updateChats } = useChatStore();
 
   const { data, loading, error } = useQuery<GetChatsResponse>(GET_CHATS, {
-    variables: { userId: localStorage.getItem("userId") },
+    variables: { userId: getLocalStorage("userId") },
   });
 
   useEffect(() => {

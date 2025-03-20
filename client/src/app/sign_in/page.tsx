@@ -9,6 +9,7 @@ import { login } from "../../graphql/queries/login";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import { setLocalStorage,getLocalStorage,removeLocalStorage } from "@lib/storage";
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
@@ -34,14 +35,14 @@ export default function LoginPage() {
         return;
       }
 
-      localStorage.setItem("token", data.loginUser.token);
-      localStorage.setItem("userId", data.loginUser.user.id);
+      setLocalStorage("token", data.loginUser.token);
+      setLocalStorage("userId", data.loginUser.user.id);
     
       toast.success("Google login successful!");
       router.push("/");
     } catch (error) {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("token");
+      removeLocalStorage("userId");
+      removeLocalStorage("token");
       logout();
       console.error("Google Sign-in error:", error);
       let errorMessage = "Sign-in failed. 103";
@@ -58,7 +59,7 @@ export default function LoginPage() {
   }, [user, handleGoogleLogin]);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) router.push("/");
+    if (getLocalStorage("token")) router.push("/");
   }, [router]);
 
   const handleLogin = async () => {
@@ -66,14 +67,14 @@ export default function LoginPage() {
       const { data } = await loginUser({ variables: { email, password } });
 
       if (data?.loginUser?.token) {
-        localStorage.setItem("token", data.loginUser.token);
-        localStorage.setItem("userId", data.loginUser.user.id);
+        setLocalStorage("token", data.loginUser.token);
+        setLocalStorage("userId", data.loginUser.user.id);
         
         toast.success("Login successful!");
         router.push("/");
       } else {
-        localStorage.removeItem("userId");
-        localStorage.removeItem("token");
+        removeLocalStorage("userId");
+        removeLocalStorage("token");
         logout();
 
         toast.error("Invalid credentials.");
