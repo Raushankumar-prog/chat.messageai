@@ -11,7 +11,8 @@ const app = express();
 const corsOptions = {
   origin: [
     'https://chat-messageai-client.vercel.app',
-    'http://localhost:3000'
+    
+    'https://chat.allmodelhub.me/'
 
   ],
   credentials: true,
