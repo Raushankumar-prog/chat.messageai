@@ -40,7 +40,7 @@ function ResetPasswordContent() {
   return (
     <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-md">
       <ToastContainer />
-      <h1 className="text-3xl font-bold text-center text-blue-600">Allmodelhub</h1>
+      <h1 className="text-3xl font-bold text-center text-blue-600">AllModelHub</h1>
       <h2 className="mt-4 text-xl font-semibold text-center">Set New Password</h2>
       <p className="mt-2 text-center text-gray-400">Enter a new password for your account.</p>
 
