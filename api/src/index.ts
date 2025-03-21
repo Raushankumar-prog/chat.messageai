@@ -11,10 +11,12 @@ const app = express();
 const corsOptions = {
   origin: [
     'https://chat-messageai-client.vercel.app',
+    'http://localhost:3000'
+
   ],
   credentials: true,
   exposedHeaders: ['Authorization'], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE',"Options"], 
 };
 
 app.use(cors(corsOptions));
