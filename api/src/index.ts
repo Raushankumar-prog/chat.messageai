@@ -10,7 +10,7 @@ import cors from 'cors';
 const app = express();
 const corsOptions = {
   origin: [
-    'https://chat.allmodelhub.me/',
+    'https://chat.allmodelhub.me',
 
     'https://chat-messageai-client.vercel.app',
     
@@ -18,7 +18,7 @@ const corsOptions = {
   ],
   credentials: true,
   exposedHeaders: ['Authorization'], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE',"Options"], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 };
 
 app.use(cors(corsOptions));
