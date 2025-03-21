@@ -98,7 +98,7 @@ const handleLogin = async () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
       <div className="w-full max-w-sm p-6 bg-gray-800 rounded-lg shadow-md">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-semibold text-blue-400">proxima</h1>
+          <h1 className="text-3xl font-semibold text-blue-400">Allmodelhub</h1>
           <p className="text-sm text-gray-400 mt-2">Only login via email or Google</p>
         </div>
 

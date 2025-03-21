@@ -105,9 +105,9 @@ export default function SignUpPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 p-4">
       <div className="w-full max-w-md rounded-lg bg-gray-800 p-6 shadow-lg">
-        <h2 className="text-center text-3xl font-semibold text-blue-500">proxima</h2>
+        <h2 className="text-center text-3xl font-semibold text-blue-500">Allmodelhub</h2>
         <p className="mb-4 text-center text-gray-300">
-          One Proxima account is all you need to access all services.
+          One Allmodelhub account is all you need to access all services.
         </p>
 
         <form onSubmit={handleSignUp} className="space-y-4">
