@@ -10,10 +10,11 @@ import cors from 'cors';
 const app = express();
 const corsOptions = {
   origin: [
+    'https://chat.allmodelhub.me/',
+
     'https://chat-messageai-client.vercel.app',
     
-    'https://chat.allmodelhub.me/'
-
+    
   ],
   credentials: true,
   exposedHeaders: ['Authorization'], 
