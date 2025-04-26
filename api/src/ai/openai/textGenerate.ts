@@ -32,7 +32,7 @@ export default async function getOpenai(_: unknown, args: { message?: string; ch
 
     try {
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gemini-2.0-flash",
             messages: history,
         });
 

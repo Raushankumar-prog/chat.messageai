@@ -25,11 +25,11 @@ export const typeDefs = gql`
   }
 
   type Subscription {
- 
-    aiResponse(message: String!, chatId: String!): String
-     openairesponse(message: String!, chatId: String!): String
-     deepsakeresponse(message: String!, chatId: String!): String
-  }
+  aiResponse(message: String!, chatId: String!, model: String!): String  
+  openairesponse(message: String!, chatId: String!, model: String!): String  
+  clauderesponse(message: String!, chatId: String!, model: String!): String  
+  grokresponse(message: String!, chatId: String!, model: String!): String   
+}
 
   type Message {
     id: ID!

@@ -5,8 +5,11 @@ import { askairesolvers } from "../../ai/gemini/textgeneration.js";
 import { resetresolvers } from "./reset.resolver.js";
 import { aiResponseSubscription } from "../../schema.js";
 import getOpenai from "../../ai/openai/textGenerate.js";
-import getdeepsakeai from "../../ai/deepsake/textgeneration.js";
 import {  GraphQLString } from 'graphql';
+import getGrokai from "../../ai/grok/grok.js";
+import { getClaudeResponse } from "../../ai/claude/textgeneration.js";
+
+
 
 export const resolvers = {
   Query: {
@@ -27,6 +30,7 @@ export const resolvers = {
             args: {
               message: { type: GraphQLString },
               chatId: { type: GraphQLString },
+               model: { type: GraphQLString }
             },
             subscribe: aiResponseSubscription,
           },
@@ -35,18 +39,29 @@ export const resolvers = {
             args: {
               message: { type: GraphQLString },
               chatId: { type: GraphQLString },
+              model: { type: GraphQLString }
             },
             subscribe:getOpenai,
           },
-           deepsakeresponse: {
-            type: GraphQLString,
-            args: {
-              message: { type: GraphQLString },
-              chatId: { type: GraphQLString },
-            },
-            subscribe:getOpenai,
-          },
-          
+
+      grokresponse: {
+      type: GraphQLString,
+      args: {
+        message: { type: GraphQLString },
+        chatId: { type: GraphQLString },
+        model: { type: GraphQLString }
+      },
+      subscribe: getGrokai,
+    },
+     clauderesponse: {
+      type: GraphQLString,
+      args: {
+        message: { type: GraphQLString },
+        chatId: { type: GraphQLString },
+        model: { type: GraphQLString }
+      },
+      subscribe: getClaudeResponse,
+    }
           
 
   },

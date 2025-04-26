@@ -1,3 +1,4 @@
+"use client";
 import { create } from "zustand";
 
 type Chat = {
@@ -30,6 +31,7 @@ type ChatStore = {
   toggleSidebar: () => void;
   setIsMobile: (isMobile: boolean) => void;
   setSelectedOption: (option: string) => void;
+  getModelType: (selectedOption:string) => string;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -83,4 +85,12 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
   setIsMobile: (isMobile) => set({ isMobile }),
   setSelectedOption: (option) => set({ selectedOption: option }),
+   getModelType: (selectedOption:string) => {
+      const model = selectedOption.toLowerCase();
+      if (model.startsWith("gemini")) return "gemini";
+      if (model.startsWith("gpt")) return "gpt";
+      if (model.startsWith("claude")) return "claude";
+      if (model.startsWith("grok")) return "grok";
+      return "gemini"; 
+    }
 }));

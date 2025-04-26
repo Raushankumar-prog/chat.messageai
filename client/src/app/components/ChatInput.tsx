@@ -5,7 +5,7 @@ import { useChatStore } from "../../hook/useChatStore";
 import { FaMicrophone, FaPaperPlane } from "react-icons/fa";
 import { usePathname, useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
-import { ASK_AI, AI_RESPONSE_SUBSCRIPTION } from "../../graphql/queries/askAi";
+import { ASK_AI, AI_RESPONSE_SUBSCRIPTION,OPENAI_RESPONSE_SUBSCRIPTION,GROK_RESPONSE_SUBSCRIPTION,CLAUDE_RESPONSE_SUBSCRIPTION } from "../../graphql/queries/askAi";
 import { SAVE_ANS } from "../../graphql/queries/save";
 import { CREATETITLE } from "../../graphql/queries/createChat";
 import { v4 as uuidv4 } from "uuid";
@@ -18,15 +18,19 @@ export default function ChatInput() {
   const [input, setInput] = useState("");
   const pathname = usePathname();
   const router = useRouter();
-  const { addChat, addMessage, setShouldScroll, updateMessage,isMobile } = useChatStore();
+  const { addChat, addMessage, setShouldScroll, updateMessage,isMobile ,selectedOption,getModelType} = useChatStore();
   const [askAI] = useMutation(ASK_AI);
   const [saveAns] = useMutation(SAVE_ANS);
   const [createTitle] = useMutation(CREATETITLE);
   const [newChatId, setNewChatId] = useState<string | null>(null);
 
   const chatId = pathname.split("/c/")[1];
+  
+
+    
 
   const handleSend = useCallback(async (chatID?: string) => {
+  
     if (!input.trim()) return;
     const targetChatId = chatID || chatId;
 
@@ -42,11 +46,61 @@ export default function ChatInput() {
       setInput("");
 
       try {
-        const subscription = client.subscribe({
-          query: AI_RESPONSE_SUBSCRIPTION,
-          variables: { message: input, chatId: targetChatId },
-        });
+       let subscription;
+const modelType = getModelType(selectedOption).toLowerCase();
 
+if (modelType === 'gemini') {
+  subscription = client.subscribe({
+    query: AI_RESPONSE_SUBSCRIPTION,
+    variables: {
+      message: input,
+      chatId: targetChatId,
+      model: selectedOption.toLowerCase()
+      
+    }
+  });
+} else if (modelType === 'gpt') {
+  subscription = client.subscribe({
+    query: OPENAI_RESPONSE_SUBSCRIPTION,
+    variables: {
+      message: input,
+      chatId: targetChatId,
+      model:selectedOption.toLowerCase()
+   
+    }
+  });
+} else if (modelType === 'claude') {
+  subscription = client.subscribe({
+    query: CLAUDE_RESPONSE_SUBSCRIPTION,
+    variables: {
+      message: input,
+      chatId: targetChatId,
+      model: selectedOption.toLowerCase()
+     
+    }
+  });
+} else if (modelType === 'grok') {
+  subscription = client.subscribe({
+    query: GROK_RESPONSE_SUBSCRIPTION,
+    variables: {
+      message: input,
+      chatId: targetChatId,
+      model: selectedOption.toLowerCase()
+     
+    }
+  });
+} else {
+  // Fallback to default subscription
+  subscription = client.subscribe({
+    query: AI_RESPONSE_SUBSCRIPTION,
+    variables: {
+      message: input,
+      chatId: targetChatId,
+      model: 'default'
+    }
+  });
+}
+         console.log(selectedOption);
         let accumulatedResponse = "";
 
         subscription.subscribe({
